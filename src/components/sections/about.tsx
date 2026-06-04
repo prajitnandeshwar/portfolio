@@ -73,7 +73,7 @@ export function About() {
             </p>
             <p style={{ margin: 0 }}>
               <a
-                href="/resume.pdf"
+                href="/prajit-nandeshwar-resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group inline-flex items-center gap-1.5 font-medium underline-link py-3 text-foreground"

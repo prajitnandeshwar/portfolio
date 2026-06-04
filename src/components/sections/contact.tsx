@@ -80,7 +80,7 @@ export function Contact() {
               elevated "See selected work" treatment: foreground text, the
               same underline-link, and an ArrowUpRight that lifts on hover. */}
           <a
-            href="/resume.pdf"
+            href="/prajit-nandeshwar-resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-1.5 font-medium underline-link py-3 text-foreground"
