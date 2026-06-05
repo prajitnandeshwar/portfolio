@@ -230,6 +230,18 @@
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
 
+  /* Minimum touch target. Apply to any inline interactive element that
+     could be tapped on a phone (anchor links, icon buttons, social icons,
+     menu items). 44px is the iOS/Android guideline floor. Uses inline-flex
+     so text or icon stays centered without disturbing the surrounding line
+     box. */
+  .tap {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
   /* Shared style for the four section headings on the landing page
      (Selected Work, UI Exhibition, About, Contact). Single source of
      truth so the four titles stay in lockstep on size and weight. */

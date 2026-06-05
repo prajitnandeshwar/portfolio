@@ -71,7 +71,7 @@ export function Contact() {
             <a
               key={s.label}
               href={s.href}
-              className="text-muted-foreground hover:text-foreground transition-colors duration-200 ease-out underline-link py-2"
+              className="tap text-muted-foreground hover:text-foreground transition-colors duration-200 ease-out underline-link"
             >
               {s.label}
             </a>

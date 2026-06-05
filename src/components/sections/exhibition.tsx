@@ -112,7 +112,7 @@ export function Exhibition() {
           <h2 className="section-title" style={{ margin: 0 }}>
             A few interface moments, lifted out of context.
           </h2>
-          <p className="mt-4 text-[15px] text-muted-foreground max-w-xl">
+          <p className="mt-4 text-base text-muted-foreground max-w-xl">
             Pieces I am proud of, from products that shipped and some that did not.
           </p>
         </div>
