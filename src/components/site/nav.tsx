@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { MobileMenu } from "./mobile-menu";
 
 const AMBER = "#D97706";
 
@@ -61,6 +62,16 @@ export function Nav() {
         <Link href="/" className="tap text-[13px] font-medium tracking-tight">
           Prajit Nandeshwar
         </Link>
+
+        {/* Mobile: hamburger reveals a full-screen overlay menu. */}
+        <div className="md:hidden">
+          <MobileMenu
+            links={links}
+            activeHash={hash}
+            isWorkSubroute={!!isWorkSubroute}
+          />
+        </div>
+
         <nav className="hidden md:flex items-center gap-1 text-[13px]">
           {links.map((link) => {
             const slug = link.href.replace(/^.*#/, "");

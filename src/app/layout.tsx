@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${geistMono.variable} h-full antialiased scroll-smooth`}
+      className={`${inter.variable} ${geistMono.variable} h-full antialiased scroll-smooth scroll-pt-14`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-foreground selection:text-background">
         {children}

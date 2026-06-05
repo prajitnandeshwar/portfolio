@@ -181,6 +181,15 @@
   .chaos-card-float {
     animation: none;
   }
+  /* Disable the Base UI Sheet enter/exit transitions so the mobile
+     menu appears and disappears instantly under reduced motion. The
+     close button transition is also disabled. */
+  [data-slot="sheet-content"],
+  [data-slot="sheet-overlay"],
+  [data-slot="sheet-close"] {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────── */
