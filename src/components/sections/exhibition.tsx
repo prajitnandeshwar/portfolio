@@ -153,17 +153,21 @@ function HoverCaption({
   // The gradient sits in the bottom 30% of the tile, fading from transparent
   // at the top to ~50% black at the bottom. Text rides the gradient at
   // bottom-left with 24px padding.
+  //
+  // Visibility: hover-gated on devices that can hover (cursor), always
+  // visible on devices that cannot hover (touch). The forceVisible escape
+  // hatch is for screenshot capture.
+  //
+  // Gradient strength: dimmer on touch viewports so the screenshot below
+  // is not over-darkened by a caption that cannot be dismissed by moving
+  // the cursor away. The two values live in the .tile-caption class.
   const visibilityClasses = forceVisible
     ? "opacity-100"
-    : "opacity-0 group-hover:opacity-100";
+    : "opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100";
   return (
     <div
       aria-hidden
-      className={`absolute inset-x-0 bottom-0 h-[30%] pointer-events-none transition-opacity duration-[400ms] ease-in-out ${visibilityClasses}`}
-      style={{
-        backgroundImage:
-          "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 100%)",
-      }}
+      className={`tile-caption absolute inset-x-0 bottom-0 h-[30%] pointer-events-none transition-opacity duration-[400ms] ease-in-out ${visibilityClasses}`}
     >
       {/* Caption uses a layered text-shadow so the white type stays legible
           on light screenshots without forcing a heavy gradient over the
@@ -235,7 +239,7 @@ function TileCard({
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 540px"
-            className={`object-cover select-none pointer-events-none opacity-0 transition-opacity duration-[400ms] ease-in-out group-hover:opacity-100 pointer-coarse:opacity-100 ${
+            className={`object-cover select-none pointer-events-none opacity-0 transition-opacity duration-[400ms] ease-in-out group-hover:opacity-100 ${
               forceHover ? "opacity-100" : ""
             }`}
             style={{

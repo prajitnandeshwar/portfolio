@@ -234,6 +234,28 @@
   border-radius: 1px;
 }
 
+/* On touch viewports, bump the drag handle to a 44px tap target. */
+@media (hover: none) {
+  .lp0-handle {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Exhibition tile caption gradient. The opacity of the wrapping element
+   is controlled in TSX (hover-gated on cursor, always visible on touch).
+   On touch viewports the gradient lightens so the underlying screenshot
+   is not dimmed beyond comfortable reading, since the caption cannot be
+   dismissed by moving the cursor away. */
+.tile-caption {
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%);
+}
+@media (hover: none) {
+  .tile-caption {
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
+  }
+}
+
 
 @layer utilities {
   .text-balance { text-wrap: balance; }
