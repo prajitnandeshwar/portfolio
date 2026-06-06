@@ -3,7 +3,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ImageLightbox } from "@/components/site/image-lightbox";
 
 type NdaTag = "NDA" | "Pre-launch";
 
@@ -65,12 +64,6 @@ const projects: Project[] = [
 export function Work() {
   const [activeIdx, setActiveIdx] = useState(0);
 
-  // Lightbox: index of the project whose preview is currently zoomed in.
-  // Null when closed. Tapping any preview image (mobile or desktop)
-  // opens the lightbox; the row text continues to navigate to the case
-  // study or contact section as before.
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
-
   // ?demo=work-<index> forces hover on that row for screenshot capture.
   const [demoIdx, setDemoIdx] = useState<number | null>(null);
   useEffect(() => {
@@ -84,8 +77,6 @@ export function Work() {
       }
     }
   }, []);
-
-  const openProject = openIdx !== null ? projects[openIdx] : null;
 
   return (
     <section
@@ -140,39 +131,24 @@ export function Work() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15, ease: "easeOut" }}
               >
-                {/* Tapping the preview image opens the lightbox at the
-                    active row's screenshot. Distinct from the row link
-                    on the left, which navigates to the case study or
-                    contact section. */}
-                <button
-                  type="button"
-                  onClick={() => setOpenIdx(activeIdx)}
-                  aria-label={`Open ${projects[activeIdx].title} preview`}
-                  className="block w-full text-left cursor-zoom-in"
-                >
-                  <Preview project={projects[activeIdx]} />
-                </button>
+                <Preview project={projects[activeIdx]} />
               </motion.div>
             </AnimatePresence>
           </div>
         </div>
 
-        {/* Mobile: stacked rows. The preview image is its own button
-            (opens lightbox); the text block stays an anchor (navigates).
-            HTML cannot nest anchors inside buttons, so the two are
-            siblings under the li, not parent and child. */}
+        {/* Mobile: stacked rows. Whole card (image + text) is a single
+            anchor; tapping anywhere navigates to the case study or, if
+            none exists, to the contact section. This matches what most
+            visitors instinctively expect when a project tile is tapped. */}
         <ul className="md:hidden space-y-10">
-          {projects.map((project, i) => (
+          {projects.map((project) => (
             <li key={project.id}>
-              <button
-                type="button"
-                onClick={() => setOpenIdx(i)}
-                aria-label={`Open ${project.title} preview`}
-                className="block w-full text-left cursor-zoom-in"
+              <a
+                href={project.href ?? "#contact"}
+                className="block group"
               >
                 <Preview project={project} compact />
-              </button>
-              <a href={project.href ?? "#contact"} className="block group">
                 <MobileRow project={project} />
               </a>
             </li>
@@ -183,16 +159,6 @@ export function Work() {
           Detailed walkthroughs available on request. Some products are pre-launch and cannot be shown publicly.
         </p>
       </div>
-
-      <ImageLightbox
-        open={openProject !== null}
-        onOpenChange={(o) => {
-          if (!o) setOpenIdx(null);
-        }}
-        frames={openProject?.image ? [openProject.image] : []}
-        title={openProject?.title}
-        caption={openProject?.description}
-      />
     </section>
   );
 }

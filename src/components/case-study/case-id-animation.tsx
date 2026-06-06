@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Three beats, scroll-triggered, runs once:
 //   1. Scattered (0.5 s, brief): six pills jumbled at varied heights,
@@ -256,12 +256,47 @@ function Frame({ children }: { children: React.ReactNode }) {
 }
 
 function Stage({ children }: { children: React.ReactNode }) {
+  // The inner pills and threads are positioned in absolute pixels
+  // relative to a virtual 1080 x 354 stage (pills at +/- 275 from
+  // center). On narrow viewports the container is smaller than 1080,
+  // so the inner stage is scaled down proportionally via a ResizeObserver.
+  // overflow-hidden on the outer prevents any residual overflow from
+  // forcing horizontal page scroll on phones.
+  const outerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    if (!outerRef.current) return;
+    const update = () => {
+      const w = outerRef.current?.clientWidth ?? 1080;
+      setScale(Math.min(1, w / 1080));
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(outerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div
-      className="relative"
+      ref={outerRef}
+      className="relative overflow-hidden"
       style={{ aspectRatio: "1080 / 354", margin: 0 }}
     >
-      {children}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: 1080,
+          height: 354,
+          transform: `scale(${scale})`,
+          transformOrigin: "top left",
+          margin: 0,
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }
