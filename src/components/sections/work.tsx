@@ -2,8 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
+import { ImageLightbox } from "@/components/site/image-lightbox";
 
 type NdaTag = "NDA" | "Pre-launch";
 
@@ -65,6 +65,12 @@ const projects: Project[] = [
 export function Work() {
   const [activeIdx, setActiveIdx] = useState(0);
 
+  // Lightbox: index of the project whose preview is currently zoomed in.
+  // Null when closed. Tapping any preview image (mobile or desktop)
+  // opens the lightbox; the row text continues to navigate to the case
+  // study or contact section as before.
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+
   // ?demo=work-<index> forces hover on that row for screenshot capture.
   const [demoIdx, setDemoIdx] = useState<number | null>(null);
   useEffect(() => {
@@ -78,6 +84,8 @@ export function Work() {
       }
     }
   }, []);
+
+  const openProject = openIdx !== null ? projects[openIdx] : null;
 
   return (
     <section
@@ -100,10 +108,13 @@ export function Work() {
           </h2>
         </motion.div>
 
-        {/* Desktop: split view (list left, preview right, image vertically centered).
-            5fr / 7fr gives the preview ~58% of the row width so details in the
-            screenshots stay legible. */}
-        <div className="hidden md:grid md:grid-cols-[5fr_7fr] md:gap-10 md:items-center">
+        {/* Desktop: split view (list left, sticky preview right). 5fr / 7fr
+            gives the preview ~58% of the row width so details in the
+            screenshots stay legible. items-start (not items-center) lets
+            the right column position itself with sticky top, so the
+            preview follows the viewport as the visitor scrolls through
+            the project list. */}
+        <div className="hidden md:grid md:grid-cols-[5fr_7fr] md:gap-10 md:items-start">
           <ul
             className="border-t border-border"
             onMouseLeave={() => setActiveIdx((i) => i)}
@@ -120,7 +131,7 @@ export function Work() {
             ))}
           </ul>
 
-          <div>
+          <div className="md:sticky md:top-20">
             <AnimatePresence mode="wait">
               <motion.div
                 key={projects[activeIdx].id}
@@ -129,21 +140,39 @@ export function Work() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15, ease: "easeOut" }}
               >
-                <Preview project={projects[activeIdx]} />
+                {/* Tapping the preview image opens the lightbox at the
+                    active row's screenshot. Distinct from the row link
+                    on the left, which navigates to the case study or
+                    contact section. */}
+                <button
+                  type="button"
+                  onClick={() => setOpenIdx(activeIdx)}
+                  aria-label={`Open ${projects[activeIdx].title} preview`}
+                  className="block w-full text-left cursor-zoom-in"
+                >
+                  <Preview project={projects[activeIdx]} />
+                </button>
               </motion.div>
             </AnimatePresence>
           </div>
         </div>
 
-        {/* Mobile: stacked, preview above each row */}
+        {/* Mobile: stacked rows. The preview image is its own button
+            (opens lightbox); the text block stays an anchor (navigates).
+            HTML cannot nest anchors inside buttons, so the two are
+            siblings under the li, not parent and child. */}
         <ul className="md:hidden space-y-10">
-          {projects.map((project) => (
+          {projects.map((project, i) => (
             <li key={project.id}>
-              <a
-                href={project.href ?? "#contact"}
-                className="block group"
+              <button
+                type="button"
+                onClick={() => setOpenIdx(i)}
+                aria-label={`Open ${project.title} preview`}
+                className="block w-full text-left cursor-zoom-in"
               >
                 <Preview project={project} compact />
+              </button>
+              <a href={project.href ?? "#contact"} className="block group">
                 <MobileRow project={project} />
               </a>
             </li>
@@ -154,6 +183,16 @@ export function Work() {
           Detailed walkthroughs available on request. Some products are pre-launch and cannot be shown publicly.
         </p>
       </div>
+
+      <ImageLightbox
+        open={openProject !== null}
+        onOpenChange={(o) => {
+          if (!o) setOpenIdx(null);
+        }}
+        frames={openProject?.image ? [openProject.image] : []}
+        title={openProject?.title}
+        caption={openProject?.description}
+      />
     </section>
   );
 }
