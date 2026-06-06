@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import { ArrowUpRight, Menu, X } from "lucide-react";
+import { SOCIALS } from "@/lib/socials";
 
 const AMBER = "#D97706";
 
@@ -89,12 +90,26 @@ export function MobileMenu({
               </Link>
             }
           />
-          {/* Socials slot. Populated in Section 7 once URLs are supplied. */}
-          <div
-            data-mobile-socials
-            className="flex items-center gap-2 text-muted-foreground"
-            aria-hidden="true"
-          />
+          {/* Socials row. Same icons as Contact and Footer; SheetClose
+              wrappers ensure tapping any icon also closes the menu. */}
+          <div className="flex items-center gap-2 text-muted-foreground">
+            {SOCIALS.map(({ label, href, Icon }) => (
+              <SheetClose
+                key={label}
+                render={
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="tap justify-center hover:text-[#D97706] transition-colors duration-200 ease-out"
+                  >
+                    <Icon className="size-5" strokeWidth={1.75} />
+                  </a>
+                }
+              />
+            ))}
+          </div>
         </div>
       </SheetContent>
     </Sheet>
