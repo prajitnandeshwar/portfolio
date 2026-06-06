@@ -59,9 +59,13 @@ const tiles: Tile[] = [
     year: "2024",
     color: "#E8E3DD",
     image: "/exhibition/compliance-scorecard.png",
-    // Source PNG has ~64px transparent shadow margin on each side. The 5%
-    // scale pushes those margins past the tile edge so content sits flush.
-    imageScale: 1.05,
+    // Source PNG is a tall portrait (2860 x 5227) showing a full
+    // scorecard page. With object-cover and objectPosition top the
+    // tile displays just the gauge header at the top, which is the
+    // strongest single visual in the screenshot. No imageScale: the
+    // 1.05 trick was meant for landscape images with transparent
+    // shadow margins; on this portrait without margins it was
+    // hiding the content entirely on mobile.
     lightboxCaption:
       "Compliance Score. A single number that distills risk across entities.",
   },
