@@ -268,12 +268,18 @@
      could be tapped on a phone (anchor links, icon buttons, social icons,
      menu items). 44px is the iOS/Android guideline floor. Uses inline-flex
      so text or icon stays centered without disturbing the surrounding line
-     box. */
+     box. Also paints a visible focus ring in the site amber so keyboard
+     visitors can see where they are. */
   .tap {
     min-height: 44px;
     min-width: 44px;
     display: inline-flex;
     align-items: center;
+  }
+  .tap:focus-visible {
+    outline: 2px solid #D97706;
+    outline-offset: 2px;
+    border-radius: 6px;
   }
 
   /* Shared style for the four section headings on the landing page
