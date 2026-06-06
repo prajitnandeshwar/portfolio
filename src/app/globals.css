@@ -186,7 +186,10 @@
      close button transition is also disabled. */
   [data-slot="sheet-content"],
   [data-slot="sheet-overlay"],
-  [data-slot="sheet-close"] {
+  [data-slot="sheet-close"],
+  [data-slot="dialog-content"],
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-close"] {
     transition: none !important;
     animation: none !important;
   }
