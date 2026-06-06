@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
+import { ImageLightbox } from "@/components/site/image-lightbox";
 
 type ScreenshotPlaceholderProps = {
   caption: string;
@@ -10,6 +14,11 @@ type ScreenshotPlaceholderProps = {
 // Renders a real image when src is provided, otherwise a cream-soft
 // placeholder block with the small amber "Real screenshot" marker and the
 // caption text centred inside.
+//
+// When src is provided, the frame is a button: tapping opens the same
+// ImageLightbox used in Exhibition and Selected Work, with the screenshot
+// fit-to-width and zoomable. The cursor-zoom-in cue advertises this on
+// fine-pointer devices.
 
 export function ScreenshotPlaceholder({
   caption,
@@ -17,27 +26,47 @@ export function ScreenshotPlaceholder({
   alt,
   aspect = "16/9",
 }: ScreenshotPlaceholderProps) {
+  const [open, setOpen] = useState(false);
+
   if (src) {
     return (
-      <div
-        style={{
-          aspectRatio: aspect,
-          backgroundColor: "var(--surface)",
-          borderColor: "var(--border)",
-          boxShadow: "var(--frame-shadow)",
-          margin: 0,
-        }}
-        className="relative w-full rounded-xl border overflow-hidden"
-      >
-        <Image
-          src={src}
-          alt={alt ?? caption}
-          fill
-          sizes="(max-width: 768px) 100vw, 1080px"
-          className="object-cover"
-          style={{ objectPosition: "top" }}
+      <>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label={`Open ${alt ?? caption}`}
+          className="block w-full text-left cursor-zoom-in"
+          style={{ margin: 0 }}
+        >
+          <div
+            style={{
+              aspectRatio: aspect,
+              backgroundColor: "var(--surface)",
+              borderColor: "var(--border)",
+              boxShadow: "var(--frame-shadow)",
+              margin: 0,
+            }}
+            className="relative w-full rounded-xl border overflow-hidden"
+          >
+            <Image
+              src={src}
+              alt={alt ?? caption}
+              fill
+              sizes="(max-width: 768px) 100vw, 1080px"
+              className="object-cover"
+              style={{ objectPosition: "top" }}
+            />
+          </div>
+        </button>
+
+        <ImageLightbox
+          open={open}
+          onOpenChange={setOpen}
+          frames={[src]}
+          caption={caption}
+          title={alt ?? caption}
         />
-      </div>
+      </>
     );
   }
 

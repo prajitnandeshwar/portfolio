@@ -7,7 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 // ── Behavior summary ─────────────────────────────────────────────────
 //
@@ -34,7 +34,12 @@ const SWIPE_VERT_BIAS = 1.5;
 type ImageLightboxProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  frames: string[];
+  // Either provide a list of image URLs (frames) or a single arbitrary
+  // React node (eg. an inline SVG). When node is provided it renders
+  // inside the same zoom/pan stage as frames would, so SVGs that need
+  // to keep their fonts (Inter, in the case of the IA map) stay inline.
+  frames?: string[];
+  node?: ReactNode;
   caption?: string;
   initialIndex?: number;
   // Optional: short label used for the (visually hidden) dialog title.
@@ -45,7 +50,8 @@ type ImageLightboxProps = {
 export function ImageLightbox({
   open,
   onOpenChange,
-  frames,
+  frames = [],
+  node,
   caption,
   initialIndex = 0,
   title = "Image preview",
@@ -328,7 +334,16 @@ export function ImageLightbox({
           className="relative w-full h-full overflow-auto flex items-start justify-center px-0 py-0"
           style={{ touchAction: "none" }}
         >
-          {hasFrames ? (
+          {node ? (
+            <div
+              className="origin-center will-change-transform select-none w-full"
+              style={{
+                transform: `translate(${tx}px, ${ty}px) scale(${scale})`,
+              }}
+            >
+              {node}
+            </div>
+          ) : hasFrames ? (
             <div
               className="origin-center will-change-transform select-none pointer-events-none w-full"
               style={{

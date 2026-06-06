@@ -29,10 +29,11 @@ export function CaseStudySection({
 }
 
 // Body prose container. Paragraphs separated by 16px (space-y-4) per spec.
-// 17px / weight 400 / line-height 1.6, stretches full 1080px content width.
+// 17px / weight 400. Line-height tightens on desktop where the eye scans
+// shorter line segments, loosens on mobile for thumb-distance reading.
 export function Prose({ children }: { children: ReactNode }) {
   return (
-    <div className="space-y-4 text-[17px] text-[#6B6B68] leading-[1.6]">
+    <div className="space-y-4 text-[17px] text-[#6B6B68] leading-[1.7] md:leading-[1.6]">
       {children}
     </div>
   );

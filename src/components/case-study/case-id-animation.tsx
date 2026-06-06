@@ -1,8 +1,9 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
 
-// Three beats with explicit, slow threading as the centerpiece:
+// Three beats, scroll-triggered, runs once:
 //   1. Scattered (0.5 s, brief): six pills jumbled at varied heights,
 //      out of order along the width. Hand-checked positions so no two
 //      pills ever overlap, in scatter or in motion.
@@ -12,7 +13,9 @@ import { motion, useReducedMotion } from "framer-motion";
 //      viewer literally sees the connection being made link by link.
 //   3. Unify (0.8 s): the connected nodes converge to center and the
 //      Case ID anchor scales up from that point as they merge in.
-// Then 3 s breath on the anchor, then cross-fade back to scattered.
+// The animation freezes on the unified state. It plays once per page
+// view, triggered when the figure scrolls into the viewport via
+// IntersectionObserver. Disabled entirely under prefers-reduced-motion.
 
 type Pill = {
   id: string;
@@ -22,8 +25,8 @@ type Pill = {
 
 // Hand-picked positions, verified against pill bounding box (~95 wide,
 // 26 tall) so no two pills overlap statically or while another is in
-// flight. Axis positions evenly spaced at ±275 with 110 px stride; pill
-// width 95 leaves a 15 px gap between adjacent nodes when settled.
+// flight. Axis positions evenly spaced at +/- 275 with 110 px stride;
+// pill width 95 leaves a 15 px gap between adjacent nodes when settled.
 const PILLS: Pill[] = [
   { id: "ZD33112421", scatter: { x:  200, y:  45 }, axisX: -275 },
   { id: "ZD33122302", scatter: { x:  160, y: -50 }, axisX: -165 },
@@ -33,17 +36,14 @@ const PILLS: Pill[] = [
   { id: "ZD33189401", scatter: { x:   30, y: -60 }, axisX:  275 },
 ];
 
-// Phase timing (seconds within a 9 s loop). Threading at 3.6 s is by
-// far the longest beat so the connecting reads as the centerpiece.
-const LOOP = 9.0;
-const SCATTER_HOLD_END = 0.5; // brief jumbled hold, then settle starts
-const PER_PILL_DURATION = 0.6; // each pill's settle + matching segment
+// Phase timing (seconds within a single 5.4 s play). Threading at 3.6 s
+// is by far the longest beat so the connecting reads as the centerpiece.
+const SCATTER_HOLD_END = 0.5;
+const PER_PILL_DURATION = 0.6;
 const SETTLE_END = SCATTER_HOLD_END + PILLS.length * PER_PILL_DURATION; // 4.1
-const CONNECTED_HOLD_END = SETTLE_END + 0.5; // 4.6, brief hold on the ordered chain
-const UNIFY_END = CONNECTED_HOLD_END + 0.8; // 5.4, anchor scaled in
-const ANCHOR_HOLD_END = UNIFY_END + 3.0; // 8.4, 3 s breath
-const SNAP_BACK = ANCHOR_HOLD_END + 0.05; // 8.45, invisible reset to scatter
-const RESET_END = LOOP; // 9.0, pills faded back in at scatter
+const CONNECTED_HOLD_END = SETTLE_END + 0.5; // 4.6
+const UNIFY_END = CONNECTED_HOLD_END + 0.8; // 5.4
+const DURATION = UNIFY_END;
 
 const EASE = "easeInOut" as const;
 
@@ -64,16 +64,22 @@ function segmentEnd(i: number) {
 
 export function CaseIdAnimation() {
   const reduceMotion = useReducedMotion();
+  const triggerRef = useRef<HTMLDivElement>(null);
+  // once:true means the animation plays a single time; subsequent
+  // scrolls in and out of view do not replay it.
+  const inView = useInView(triggerRef, { once: true, amount: 0.3 });
 
   if (reduceMotion) {
     return (
       <Frame>
-        <Stage>
-          <AxisLine />
-          <Centered>
-            <CaseIdAnchor />
-          </Centered>
-        </Stage>
+        <div ref={triggerRef}>
+          <Stage>
+            <AxisLine />
+            <Centered>
+              <CaseIdAnchor />
+            </Centered>
+          </Stage>
+        </div>
         <Caption />
       </Frame>
     );
@@ -81,171 +87,159 @@ export function CaseIdAnimation() {
 
   return (
     <Frame>
-      <Stage>
-        <AxisLine />
+      <div ref={triggerRef}>
+        <Stage>
+          <AxisLine />
 
-        {/* Tick marks at the six final node slots, very subtle, hint at
-            the ordered timeline even while pills are scattered. */}
-        {PILLS.map((pill) => (
-          <Tick key={`tick-${pill.id}`} x={pill.axisX} />
-        ))}
+          {/* Tick marks at the six final node slots, very subtle, hint at
+              the ordered timeline even while pills are scattered. */}
+          {PILLS.map((pill) => (
+            <Tick key={`tick-${pill.id}`} x={pill.axisX} />
+          ))}
 
-        {/* Thread segments: five segments connect six nodes. Each segment
-            starts when the next pill begins settling, so the viewer sees
-            one link form at a time. */}
-        {PILLS.slice(0, -1).map((pill, i) => {
-          const next = PILLS[i + 1];
-          const width = next.axisX - pill.axisX;
-          const sStart = segmentStart(i);
-          const sEnd = segmentEnd(i);
+          {/* Thread segments: five segments connect six nodes. Each
+              segment starts when the next pill begins settling, so the
+              viewer sees one link form at a time. */}
+          {PILLS.slice(0, -1).map((pill, i) => {
+            const next = PILLS[i + 1];
+            const width = next.axisX - pill.axisX;
+            const sStart = segmentStart(i);
+            const sEnd = segmentEnd(i);
 
-          return (
-            <div
-              key={`seg-${i}`}
-              className="absolute"
-              style={{
-                top: "50%",
-                left: "50%",
-                translate: `${pill.axisX}px -0.75px`,
-                margin: 0,
-              }}
-              aria-hidden
-            >
-              <motion.div
+            return (
+              <div
+                key={`seg-${i}`}
+                className="absolute"
                 style={{
-                  width: `${width}px`,
-                  height: "1.5px",
-                  backgroundColor: "#9C9C97",
-                  transformOrigin: "left center",
+                  top: "50%",
+                  left: "50%",
+                  translate: `${pill.axisX}px -0.75px`,
                   margin: 0,
                 }}
-                initial={{ scaleX: 0, opacity: 0 }}
-                animate={{
-                  scaleX: [0, 0, 1, 1, 1, 0],
-                  opacity: [0, 0, 1, 1, 0, 0],
+                aria-hidden
+              >
+                <motion.div
+                  style={{
+                    width: `${width}px`,
+                    height: "1.5px",
+                    backgroundColor: "#9C9C97",
+                    transformOrigin: "left center",
+                    margin: 0,
+                  }}
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={
+                    inView
+                      ? {
+                          scaleX: [0, 0, 1, 1, 1],
+                          opacity: [0, 0, 1, 1, 0],
+                        }
+                      : { scaleX: 0, opacity: 0 }
+                  }
+                  transition={{
+                    duration: DURATION,
+                    times: [
+                      0,
+                      sStart / DURATION,
+                      sEnd / DURATION,
+                      CONNECTED_HOLD_END / DURATION,
+                      1,
+                    ],
+                    ease: EASE,
+                  }}
+                />
+              </div>
+            );
+          })}
+
+          {/* Pills */}
+          {PILLS.map((pill, i) => {
+            const tSettleStart = pillSettleStart(i);
+            const tSettleEnd = pillSettleEnd(i);
+
+            return (
+              <motion.div
+                key={pill.id}
+                initial={{
+                  opacity: 1,
+                  x: pill.scatter.x,
+                  y: pill.scatter.y,
+                  scale: 1,
                 }}
+                animate={
+                  inView
+                    ? {
+                        opacity: [1, 1, 1, 1, 0],
+                        x: [
+                          pill.scatter.x,
+                          pill.scatter.x,
+                          pill.axisX,
+                          pill.axisX,
+                          0,
+                        ],
+                        y: [pill.scatter.y, pill.scatter.y, 0, 0, 0],
+                        scale: [1, 1, 1, 1, 0.35],
+                      }
+                    : {
+                        opacity: 1,
+                        x: pill.scatter.x,
+                        y: pill.scatter.y,
+                        scale: 1,
+                      }
+                }
                 transition={{
-                  duration: LOOP,
+                  duration: DURATION,
                   times: [
                     0,
-                    sStart / LOOP,
-                    sEnd / LOOP,
-                    CONNECTED_HOLD_END / LOOP,
-                    UNIFY_END / LOOP,
+                    tSettleStart / DURATION,
+                    tSettleEnd / DURATION,
+                    CONNECTED_HOLD_END / DURATION,
                     1,
                   ],
                   ease: EASE,
-                  repeat: Infinity,
-                  repeatType: "loop",
                 }}
-              />
-            </div>
-          );
-        })}
+                className="absolute px-2.5 py-1 bg-white border rounded text-[12.5px] font-mono text-[#6B6B68] whitespace-nowrap"
+                style={{
+                  top: "50%",
+                  left: "50%",
+                  translate: "-50% -50%",
+                  borderColor: "var(--border)",
+                  boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
+                  margin: 0,
+                }}
+              >
+                {pill.id}
+              </motion.div>
+            );
+          })}
 
-        {/* Pills */}
-        {PILLS.map((pill, i) => {
-          const tSettleStart = pillSettleStart(i);
-          const tSettleEnd = pillSettleEnd(i);
-
-          return (
-            <motion.div
-              key={pill.id}
-              initial={{
-                opacity: 1,
-                x: pill.scatter.x,
-                y: pill.scatter.y,
-                scale: 1,
-              }}
-              animate={{
-                opacity: [1, 1, 1, 1, 0, 0, 0, 1],
-                x: [
-                  pill.scatter.x,
-                  pill.scatter.x,
-                  pill.axisX,
-                  pill.axisX,
-                  0,
-                  0,
-                  pill.scatter.x,
-                  pill.scatter.x,
-                ],
-                y: [
-                  pill.scatter.y,
-                  pill.scatter.y,
-                  0,
-                  0,
-                  0,
-                  0,
-                  pill.scatter.y,
-                  pill.scatter.y,
-                ],
-                scale: [1, 1, 1, 1, 0.35, 0.35, 1, 1],
-              }}
-              transition={{
-                duration: LOOP,
-                times: [
-                  0,
-                  tSettleStart / LOOP,
-                  tSettleEnd / LOOP,
-                  CONNECTED_HOLD_END / LOOP,
-                  UNIFY_END / LOOP,
-                  ANCHOR_HOLD_END / LOOP,
-                  SNAP_BACK / LOOP,
-                  1,
-                ],
-                ease: EASE,
-                repeat: Infinity,
-                repeatType: "loop",
-              }}
-              className="absolute px-2.5 py-1 bg-white border rounded text-[12.5px] font-mono text-[#6B6B68] whitespace-nowrap"
-              style={{
-                top: "50%",
-                left: "50%",
-                translate: "-50% -50%",
-                borderColor: "var(--border)",
-                boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
-                margin: 0,
-              }}
-            >
-              {pill.id}
-            </motion.div>
-          );
-        })}
-
-        {/* Case ID anchor: hidden through scatter and threading, scales
-            up at the center as the chain converges into it, holds 3 s,
-            then cross-fades out as pills fade back in at scatter. */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{
-            opacity: [0, 0, 1, 1, 0],
-            scale: [0.85, 0.85, 1, 1, 0.85],
-          }}
-          transition={{
-            duration: LOOP,
-            times: [
-              0,
-              CONNECTED_HOLD_END / LOOP,
-              UNIFY_END / LOOP,
-              ANCHOR_HOLD_END / LOOP,
-              1,
-            ],
-            ease: EASE,
-            repeat: Infinity,
-            repeatType: "loop",
-          }}
-          className="absolute pointer-events-none"
-          style={{
-            top: "50%",
-            left: "50%",
-            translate: "-50% -50%",
-            margin: 0,
-            zIndex: 10,
-          }}
-        >
-          <CaseIdAnchor />
-        </motion.div>
-      </Stage>
+          {/* Case ID anchor: hidden through scatter and threading, scales
+              up at the center as the chain converges into it. Holds on
+              the unified state for the rest of the page session. */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={
+              inView
+                ? { opacity: [0, 0, 1], scale: [0.85, 0.85, 1] }
+                : { opacity: 0, scale: 0.85 }
+            }
+            transition={{
+              duration: DURATION,
+              times: [0, CONNECTED_HOLD_END / DURATION, 1],
+              ease: EASE,
+            }}
+            className="absolute pointer-events-none"
+            style={{
+              top: "50%",
+              left: "50%",
+              translate: "-50% -50%",
+              margin: 0,
+              zIndex: 10,
+            }}
+          >
+            <CaseIdAnchor />
+          </motion.div>
+        </Stage>
+      </div>
       <Caption />
     </Frame>
   );
