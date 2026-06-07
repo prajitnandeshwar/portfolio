@@ -70,7 +70,7 @@ export function Hero() {
 
         <motion.p
           variants={item}
-          className="max-w-xl text-pretty text-[15px] md:text-base leading-relaxed text-muted-foreground"
+          className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground"
           style={{ margin: "2rem auto 0" }}
         >
           I lead design strategy for Clear&rsquo;s India and Global B2B portfolio: 8 products, 1,500+ enterprise customers, 4 countries. I design AI-augmented compliance products and prototype enterprise software in code.
@@ -78,7 +78,7 @@ export function Hero() {
 
         <motion.div
           variants={item}
-          className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[15px]"
+          className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-base"
           style={{ marginTop: "3rem" }}
         >
           <a

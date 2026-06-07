@@ -2,15 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-
-type Social = { label: string; href: string };
-
-const socials: Social[] = [
-  { label: "Read.cv", href: "#" },
-  { label: "LinkedIn", href: "#" },
-  { label: "Are.na", href: "#" },
-  { label: "X", href: "#" },
-];
+import { SOCIALS } from "@/lib/socials";
 
 const reveal = {
   hidden: { opacity: 0, y: 12 },
@@ -65,15 +57,18 @@ export function Contact() {
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
           transition={{ delay: 0.15 }}
-          className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px]"
+          className="mt-12 flex flex-wrap items-center gap-x-4 gap-y-2 text-[14px]"
         >
-          {socials.map((s) => (
+          {SOCIALS.map(({ label, href, Icon }) => (
             <a
-              key={s.label}
-              href={s.href}
-              className="text-muted-foreground hover:text-foreground transition-colors duration-200 ease-out underline-link py-2"
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={label}
+              className="tap justify-center text-muted-foreground hover:text-[#D97706] transition-colors duration-200 ease-out"
             >
-              {s.label}
+              <Icon className="size-5" strokeWidth={1.75} />
             </a>
           ))}
           {/* View resume sits in the same row as the socials but with the
@@ -83,7 +78,7 @@ export function Contact() {
             href="/prajit-nandeshwar-resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-1.5 font-medium underline-link py-3 text-foreground"
+            className="group inline-flex items-center gap-1.5 ml-2 font-medium underline-link py-3 text-foreground"
           >
             View resume
             <ArrowUpRight className="size-4 transition-[transform,color] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#D97706]" />

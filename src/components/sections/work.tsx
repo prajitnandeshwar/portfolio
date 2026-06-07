@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 type NdaTag = "NDA" | "Pre-launch";
@@ -100,10 +99,13 @@ export function Work() {
           </h2>
         </motion.div>
 
-        {/* Desktop: split view (list left, preview right, image vertically centered).
-            5fr / 7fr gives the preview ~58% of the row width so details in the
-            screenshots stay legible. */}
-        <div className="hidden md:grid md:grid-cols-[5fr_7fr] md:gap-10 md:items-center">
+        {/* Desktop: split view (list left, sticky preview right). 5fr / 7fr
+            gives the preview ~58% of the row width so details in the
+            screenshots stay legible. items-start (not items-center) lets
+            the right column position itself with sticky top, so the
+            preview follows the viewport as the visitor scrolls through
+            the project list. */}
+        <div className="hidden md:grid md:grid-cols-[5fr_7fr] md:gap-10 md:items-start">
           <ul
             className="border-t border-border"
             onMouseLeave={() => setActiveIdx((i) => i)}
@@ -120,7 +122,7 @@ export function Work() {
             ))}
           </ul>
 
-          <div>
+          <div className="md:sticky md:top-20">
             <AnimatePresence mode="wait">
               <motion.div
                 key={projects[activeIdx].id}
@@ -135,7 +137,10 @@ export function Work() {
           </div>
         </div>
 
-        {/* Mobile: stacked, preview above each row */}
+        {/* Mobile: stacked rows. Whole card (image + text) is a single
+            anchor; tapping anywhere navigates to the case study or, if
+            none exists, to the contact section. This matches what most
+            visitors instinctively expect when a project tile is tapped. */}
         <ul className="md:hidden space-y-10">
           {projects.map((project) => (
             <li key={project.id}>

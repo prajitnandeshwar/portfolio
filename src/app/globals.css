@@ -181,6 +181,18 @@
   .chaos-card-float {
     animation: none;
   }
+  /* Disable the Base UI Sheet enter/exit transitions so the mobile
+     menu appears and disappears instantly under reduced motion. The
+     close button transition is also disabled. */
+  [data-slot="sheet-content"],
+  [data-slot="sheet-overlay"],
+  [data-slot="sheet-close"],
+  [data-slot="dialog-content"],
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-close"] {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────── */
@@ -225,10 +237,50 @@
   border-radius: 1px;
 }
 
+/* On touch viewports, bump the drag handle to a 44px tap target. */
+@media (hover: none) {
+  .lp0-handle {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Exhibition tile caption gradient. The opacity of the wrapping element
+   is controlled in TSX (hover-gated on cursor, always visible on touch).
+   On touch viewports the gradient lightens so the underlying screenshot
+   is not dimmed beyond comfortable reading, since the caption cannot be
+   dismissed by moving the cursor away. */
+.tile-caption {
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%);
+}
+@media (hover: none) {
+  .tile-caption {
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
+  }
+}
+
 
 @layer utilities {
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
+
+  /* Minimum touch target. Apply to any inline interactive element that
+     could be tapped on a phone (anchor links, icon buttons, social icons,
+     menu items). 44px is the iOS/Android guideline floor. Uses inline-flex
+     so text or icon stays centered without disturbing the surrounding line
+     box. Also paints a visible focus ring in the site amber so keyboard
+     visitors can see where they are. */
+  .tap {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .tap:focus-visible {
+    outline: 2px solid #D97706;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
 
   /* Shared style for the four section headings on the landing page
      (Selected Work, UI Exhibition, About, Contact). Single source of

@@ -61,7 +61,7 @@ export function About() {
             </h2>
           </div>
 
-          <div className="md:col-span-7 md:col-start-6 space-y-5 text-[15px] md:text-base leading-[1.7] text-foreground/85">
+          <div className="md:col-span-7 md:col-start-6 space-y-5 text-base leading-[1.7] text-foreground/85 max-w-prose">
             <p>
               I have spent the last 5 years at Clear shipping enterprise compliance software for India and abroad. My work spans Tax GRC, AI-augmented design, and design systems across 8 products serving 1,500+ enterprise customers across India, UAE, Saudi Arabia, Malaysia, and France.
             </p>
@@ -97,7 +97,7 @@ export function About() {
               {currently.map((item) => (
                 <li
                   key={item}
-                  className="text-[15px]"
+                  className="text-base"
                   style={{ margin: 0 }}
                 >
                   {item}
@@ -109,7 +109,7 @@ export function About() {
                 {speaking.map((item) => (
                   <li
                     key={item.title}
-                    className="text-[15px] leading-snug"
+                    className="text-base leading-snug"
                     style={{ margin: 0 }}
                   >
                     {item.title}
@@ -123,7 +123,7 @@ export function About() {
           <Column title="Previously">
             <ul className="space-y-4" style={{ margin: 0 }}>
               {previously.map((item) => (
-                <li key={item.period} className="text-[15px] leading-snug">
+                <li key={item.period} className="text-base leading-snug">
                   <div>
                     {item.role}
                     <span className="text-muted-foreground"> · {item.company}</span>
@@ -139,7 +139,7 @@ export function About() {
           <Column title="Education">
             <ul className="space-y-4" style={{ margin: 0 }}>
               {education.map((item) => (
-                <li key={item.period} className="text-[15px] leading-snug">
+                <li key={item.period} className="text-base leading-snug">
                   <div>
                     {item.degree}
                     <span className="text-muted-foreground"> · {item.school}</span>
@@ -155,7 +155,7 @@ export function About() {
                 {outsideWork.map((item) => (
                   <li
                     key={item}
-                    className="text-[15px] leading-snug"
+                    className="text-base leading-snug"
                     style={{ margin: 0 }}
                   >
                     {item}

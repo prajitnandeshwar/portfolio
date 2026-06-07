@@ -1,9 +1,9 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { ImageLightbox } from "@/components/site/image-lightbox";
 
 // ── Data ─────────────────────────────────────────────────────────────
 
@@ -59,9 +59,13 @@ const tiles: Tile[] = [
     year: "2024",
     color: "#E8E3DD",
     image: "/exhibition/compliance-scorecard.png",
-    // Source PNG has ~64px transparent shadow margin on each side. The 5%
-    // scale pushes those margins past the tile edge so content sits flush.
-    imageScale: 1.05,
+    // Source PNG is a tall portrait (2860 x 5227) showing a full
+    // scorecard page. With object-cover and objectPosition top the
+    // tile displays just the gauge header at the top, which is the
+    // strongest single visual in the screenshot. No imageScale: the
+    // 1.05 trick was meant for landscape images with transparent
+    // shadow margins; on this portrait without margins it was
+    // hiding the content entirely on mobile.
     lightboxCaption:
       "Compliance Score. A single number that distills risk across entities.",
   },
@@ -112,7 +116,7 @@ export function Exhibition() {
           <h2 className="section-title" style={{ margin: 0 }}>
             A few interface moments, lifted out of context.
           </h2>
-          <p className="mt-4 text-[15px] text-muted-foreground max-w-xl">
+          <p className="mt-4 text-base text-muted-foreground max-w-xl">
             Pieces I am proud of, from products that shipped and some that did not.
           </p>
         </div>
@@ -134,7 +138,21 @@ export function Exhibition() {
         </div>
       </div>
 
-      <Lightbox tile={openTile} onClose={() => setOpenTileId(null)} />
+      <ImageLightbox
+        open={!!openTile}
+        onOpenChange={(o) => {
+          if (!o) setOpenTileId(null);
+        }}
+        frames={
+          openTile
+            ? ([openTile.image, openTile.hoverImage].filter(
+                Boolean,
+              ) as string[])
+            : []
+        }
+        caption={openTile?.lightboxCaption}
+        title={openTile?.name}
+      />
     </section>
   );
 }
@@ -153,17 +171,21 @@ function HoverCaption({
   // The gradient sits in the bottom 30% of the tile, fading from transparent
   // at the top to ~50% black at the bottom. Text rides the gradient at
   // bottom-left with 24px padding.
+  //
+  // Visibility: hover-gated on devices that can hover (cursor), always
+  // visible on devices that cannot hover (touch). The forceVisible escape
+  // hatch is for screenshot capture.
+  //
+  // Gradient strength: dimmer on touch viewports so the screenshot below
+  // is not over-darkened by a caption that cannot be dismissed by moving
+  // the cursor away. The two values live in the .tile-caption class.
   const visibilityClasses = forceVisible
     ? "opacity-100"
-    : "opacity-0 group-hover:opacity-100";
+    : "opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100";
   return (
     <div
       aria-hidden
-      className={`absolute inset-x-0 bottom-0 h-[30%] pointer-events-none transition-opacity duration-[400ms] ease-in-out ${visibilityClasses}`}
-      style={{
-        backgroundImage:
-          "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 100%)",
-      }}
+      className={`tile-caption absolute inset-x-0 bottom-0 h-[30%] pointer-events-none transition-opacity duration-[400ms] ease-in-out ${visibilityClasses}`}
     >
       {/* Caption uses a layered text-shadow so the white type stays legible
           on light screenshots without forcing a heavy gradient over the
@@ -235,7 +257,7 @@ function TileCard({
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 540px"
-            className={`object-cover select-none pointer-events-none opacity-0 transition-opacity duration-[400ms] ease-in-out group-hover:opacity-100 pointer-coarse:opacity-100 ${
+            className={`object-cover select-none pointer-events-none opacity-0 transition-opacity duration-[400ms] ease-in-out group-hover:opacity-100 ${
               forceHover ? "opacity-100" : ""
             }`}
             style={{
@@ -565,171 +587,5 @@ function LP0Slider() {
         <span className="text-[#9C9C97]"> · {LP0_CAPTION.year}</span>
       </figcaption>
     </figure>
-  );
-}
-
-// ── Lightbox ─────────────────────────────────────────────────────────
-
-function Lightbox({
-  tile,
-  onClose,
-}: {
-  tile: Tile | null;
-  onClose: () => void;
-}) {
-  // Ordered frame set: base image first, optional second image after. Tiles
-  // with no images fall back to the colour block + name overlay.
-  const frames = tile
-    ? ([tile.image, tile.hoverImage].filter(Boolean) as string[])
-    : [];
-  const hasFrames = frames.length > 0;
-  const multiFrame = frames.length > 1;
-
-  const [index, setIndex] = useState(0);
-
-  // Reset to frame 0 (the clean base) every time a new tile opens.
-  useEffect(() => {
-    if (tile) setIndex(0);
-  }, [tile]);
-
-  useEffect(() => {
-    if (!tile) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-        return;
-      }
-      if (!multiFrame) return;
-      if (e.key === "ArrowLeft") {
-        setIndex((i) => Math.max(0, i - 1));
-      } else if (e.key === "ArrowRight") {
-        setIndex((i) => Math.min(frames.length - 1, i + 1));
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
-    };
-  }, [tile, onClose, multiFrame, frames.length]);
-
-  return (
-    <AnimatePresence>
-      {tile && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          onClick={onClose}
-          className="fixed inset-0 z-[60] flex flex-col items-center justify-center px-8 py-12 overflow-hidden"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.85)" }}
-        >
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute top-6 right-6 z-[70] text-white/70 hover:text-[#D97706] transition-colors duration-200 ease-out"
-            aria-label="Close"
-          >
-            <X className="size-6" strokeWidth={1.75} />
-          </button>
-
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="flex flex-col items-center gap-6"
-          >
-            {hasFrames ? (
-              // Image renders at width min(90vw, 1100px), natural aspect.
-              // Container caps height at 88vh and scrolls vertically for tall
-              // screenshots, so the full screen reads at a legible width
-              // instead of being shrunk to fit.
-              <div
-                className="rounded-lg bg-white"
-                style={{
-                  width: "min(90vw, 1100px)",
-                  maxHeight: "88vh",
-                  overflowY: "auto",
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  key={frames[index]}
-                  src={frames[index]}
-                  alt={tile.name}
-                  draggable={false}
-                  className="block w-full h-auto select-none"
-                  style={{ margin: 0 }}
-                />
-              </div>
-            ) : (
-              <div
-                style={{
-                  aspectRatio: TILE_ASPECT,
-                  width: `min(90vw, calc(85vh * (${TILE_ASPECT})))`,
-                  backgroundColor: tile.color,
-                }}
-                className="relative rounded-lg overflow-hidden flex items-center justify-center"
-              >
-                <span
-                  className="text-foreground/85 text-[26px] font-medium tracking-tight"
-                  style={{ margin: 0 }}
-                >
-                  {tile.name}
-                </span>
-              </div>
-            )}
-
-            <p
-              className="text-white/80 text-[14px] max-w-2xl text-center leading-relaxed"
-              style={{ margin: 0 }}
-            >
-              {tile.lightboxCaption}
-            </p>
-          </div>
-
-          {/* Multi-frame nav is fixed to the viewport so it stays put while
-              the image scrolls inside its container. Hidden entirely for
-              single-frame tiles. */}
-          {multiFrame && (
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[70] flex items-center gap-5 px-4 py-2 rounded-full text-white/70"
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.6)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => setIndex((i) => Math.max(0, i - 1))}
-                disabled={index === 0}
-                aria-label="Previous frame"
-                className="disabled:opacity-25 hover:text-white transition-colors duration-200 ease-out"
-              >
-                <ChevronLeft className="size-5" strokeWidth={1.75} />
-              </button>
-              <span
-                className="font-mono text-[12px] tabular-nums tracking-[0.1em]"
-                style={{ margin: 0 }}
-              >
-                {index + 1} / {frames.length}
-              </span>
-              <button
-                type="button"
-                onClick={() => setIndex((i) => Math.min(frames.length - 1, i + 1))}
-                disabled={index === frames.length - 1}
-                aria-label="Next frame"
-                className="disabled:opacity-25 hover:text-white transition-colors duration-200 ease-out"
-              >
-                <ChevronRight className="size-5" strokeWidth={1.75} />
-              </button>
-            </div>
-          )}
-        </motion.div>
-      )}
-    </AnimatePresence>
   );
 }
