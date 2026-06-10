@@ -315,7 +315,7 @@ export default function NoticeTrackerPage() {
             />
             <ScreenshotPlaceholder
               src="/work/notice-tracker/case-view.png"
-              alt="Case detail workspace with case metadata left, activity center middle, and Clear AI activity hub right"
+              alt="Case detail workspace with case metadata left, activity center middle, and history, files, and comments hub right"
               caption="Three-column workspace with context, timeline, and collaboration hub"
             />
             <div className="mt-6">
