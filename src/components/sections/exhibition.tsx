@@ -185,7 +185,7 @@ function HoverCaption({
   return (
     <div
       aria-hidden
-      className={`tile-caption absolute inset-x-0 bottom-0 h-[30%] pointer-events-none transition-opacity duration-[400ms] ease-in-out ${visibilityClasses}`}
+      className={`tile-caption absolute inset-x-0 bottom-0 h-[30%] pointer-events-none transition-opacity duration-200 ease-out ${visibilityClasses}`}
     >
       {/* Caption uses a layered text-shadow so the white type stays legible
           on light screenshots without forcing a heavy gradient over the
@@ -229,7 +229,7 @@ function TileCard({
     >
       <div
         style={{ backgroundColor: tile.color, aspectRatio: TILE_ASPECT }}
-        className={`relative w-full rounded-lg border border-border overflow-hidden cursor-pointer transition-[transform,box-shadow] duration-[400ms] ease-in-out shadow-[var(--frame-shadow)] group-hover:scale-[1.02] group-hover:shadow-[var(--frame-shadow-hover)] ${
+        className={`relative w-full rounded-lg border border-border overflow-hidden cursor-pointer transition-[transform,box-shadow] duration-[220ms] ease-[cubic-bezier(0.23,1,0.32,1)] shadow-[var(--frame-shadow)] group-hover:scale-[1.02] group-hover:shadow-[var(--frame-shadow-hover)] ${
           forceHover
             ? "scale-[1.02] shadow-[var(--frame-shadow-hover)]"
             : ""
@@ -257,7 +257,7 @@ function TileCard({
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 540px"
-            className={`object-cover select-none pointer-events-none opacity-0 transition-opacity duration-[400ms] ease-in-out group-hover:opacity-100 ${
+            className={`object-cover select-none pointer-events-none opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 ${
               forceHover ? "opacity-100" : ""
             }`}
             style={{
