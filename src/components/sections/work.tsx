@@ -99,13 +99,15 @@ export function Work() {
           </h2>
         </motion.div>
 
-        {/* Desktop: split view (list left, sticky preview right). 5fr / 7fr
-            gives the preview ~58% of the row width so details in the
-            screenshots stay legible. items-start (not items-center) lets
-            the right column position itself with sticky top, so the
-            preview follows the viewport as the visitor scrolls through
-            the project list. */}
-        <div className="hidden md:grid md:grid-cols-[5fr_7fr] md:gap-10 md:items-start">
+        {/* Desktop: split view (list left, vertically centred preview
+            right). 5fr / 7fr gives the preview ~58% of the row width so
+            details in the screenshots stay legible. md:items-center keeps
+            the preview anchored to the vertical centre of the project
+            list so the image stays in one stable position as the visitor
+            scrolls and hovers different rows. Sticky scroll was tried
+            but read as the preview "moving" during scroll, which is the
+            opposite of what visitors expect. */}
+        <div className="hidden md:grid md:grid-cols-[5fr_7fr] md:gap-10 md:items-center">
           <ul
             className="border-t border-border"
             onMouseLeave={() => setActiveIdx((i) => i)}
@@ -122,7 +124,7 @@ export function Work() {
             ))}
           </ul>
 
-          <div className="md:sticky md:top-20">
+          <div>
             <AnimatePresence mode="wait">
               <motion.div
                 key={projects[activeIdx].id}
