@@ -14,7 +14,9 @@ type CaseStudyHeroProps = {
   // wraps to its own line on narrow columns so the three short items
   // (Role, Timeline, Read) stay together.
   credits: Credit[];
-  visual: ReactNode;
+  // Optional. When omitted, the text spans the full content column
+  // instead of sitting in a two-column grid with an empty visual side.
+  visual?: ReactNode;
 };
 
 export function CaseStudyHero({
@@ -26,6 +28,7 @@ export function CaseStudyHero({
   credits,
   visual,
 }: CaseStudyHeroProps) {
+  const hasVisual = visual !== undefined && visual !== null;
   return (
     <section className="px-6 md:px-12 pt-20 md:pt-24 pb-10 md:pb-12">
       <div className="mx-auto max-w-[1080px]">
@@ -42,7 +45,13 @@ export function CaseStudyHero({
           {backLabel}
         </Link>
 
-        <div className="grid grid-cols-1 md:grid-cols-[1.05fr_1fr] gap-10 md:gap-12 md:items-center">
+        <div
+          className={
+            hasVisual
+              ? "grid grid-cols-1 md:grid-cols-[1.05fr_1fr] gap-10 md:gap-12 md:items-center"
+              : ""
+          }
+        >
           {/* Text column */}
           <div>
             <h1
@@ -91,7 +100,7 @@ export function CaseStudyHero({
           </div>
 
           {/* Visual column */}
-          <div>{visual}</div>
+          {hasVisual && <div>{visual}</div>}
         </div>
       </div>
     </section>

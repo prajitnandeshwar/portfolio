@@ -31,14 +31,14 @@ const projects: Project[] = [
     image: "/work/notice-tracker.png",
   },
   {
-    id: "global-recon",
-    year: "2025",
-    status: "In design",
-    title: "Global Recon",
+    id: "agents-in-finance",
+    year: "2026",
+    title: "Agents in Finance",
     description:
-      "Multi-jurisdictional reconciliation for global indirect tax compliance.",
-    tags: ["B2B", "Multi-jurisdictional", "Compliance"],
-    ndaTag: "Pre-launch",
+      "A design language for AI agents that do real financial work. Ten named rules, four live demos, proven on Global Recon.",
+    role: "Lead Designer · Org direction",
+    tags: ["AI", "Design system", "B2B", "Live demos"],
+    href: "/work/agents-in-finance",
     image: "/work/global-recon.png",
   },
   {
