@@ -17,6 +17,10 @@ type Project = {
   ndaTag?: NdaTag;       // shown next to the figcaption project name
   href?: string;
   image?: string;        // preview screenshot; falls back to a title placeholder when absent
+  // When true, the card renders without a navigation wrapper and shows
+  // a quiet "In progress" label in place of the arrow. The card keeps
+  // every hover style; only the click target and the arrow go away.
+  inProgress?: boolean;
 };
 
 const projects: Project[] = [
@@ -40,6 +44,7 @@ const projects: Project[] = [
     tags: ["B2B", "Multi-jurisdictional", "Compliance"],
     ndaTag: "Pre-launch",
     image: "/work/global-recon.png",
+    inProgress: true,
   },
   {
     id: "clear-assurance",
@@ -50,6 +55,7 @@ const projects: Project[] = [
       "Proactive indirect tax intelligence dashboard. Multiple iterations, ultimately did not ship.",
     tags: ["B2B", "Strategy", "Data viz"],
     image: "/work/clear-assurance.png",
+    inProgress: true,
   },
   {
     id: "mint-design-system",
@@ -58,6 +64,7 @@ const projects: Project[] = [
     description: "Design system powering 8 products across Clear's portfolio.",
     tags: ["Design system", "ShadCN", "Adoption"],
     image: "/work/mint-design-system.png",
+    inProgress: true,
   },
 ];
 
@@ -142,19 +149,33 @@ export function Work() {
         {/* Mobile: stacked rows. Whole card (image + text) is a single
             anchor; tapping anywhere navigates to the case study or, if
             none exists, to the contact section. This matches what most
-            visitors instinctively expect when a project tile is tapped. */}
+            visitors instinctively expect when a project tile is tapped.
+
+            In-progress items render the same content inside a <div>
+            instead of an <a>, so the row is visible but not navigable.
+            The hover classes are kept identical, only the click target
+            goes away (cursor-default removes the pointer affordance). */}
         <ul className="md:hidden space-y-10">
-          {projects.map((project) => (
-            <li key={project.id}>
-              <a
-                href={project.href ?? "#contact"}
-                className="block group"
-              >
-                <Preview project={project} compact />
-                <MobileRow project={project} />
-              </a>
-            </li>
-          ))}
+          {projects.map((project) =>
+            project.inProgress ? (
+              <li key={project.id}>
+                <div className="block group cursor-default">
+                  <Preview project={project} compact />
+                  <MobileRow project={project} />
+                </div>
+              </li>
+            ) : (
+              <li key={project.id}>
+                <a
+                  href={project.href ?? "#contact"}
+                  className="block group"
+                >
+                  <Preview project={project} compact />
+                  <MobileRow project={project} />
+                </a>
+              </li>
+            ),
+          )}
         </ul>
 
         <p className="mt-6 max-w-xl text-[12px] text-muted-foreground">
@@ -196,6 +217,49 @@ function DesktopRow({
   forceHover: boolean;
   onHover: () => void;
 }) {
+  // The card body is identical for both states; only the wrapper
+  // element and the top-right corner (arrow vs "In progress" label)
+  // change. Keeping the inner JSX in a single shared block keeps
+  // typography, spacing, and the rest of the hover behavior identical.
+  const wrapperClassName = `group block px-3 -mx-3 py-3 rounded-md transition-colors duration-200 ease-out data-[force-hover]:bg-surface ${
+    active ? "bg-surface" : "hover:bg-surface"
+  }${project.inProgress ? " cursor-default" : ""}`;
+
+  const body = (
+    <>
+      <div className="flex items-baseline justify-between gap-4">
+        <YearLine project={project} />
+        {project.inProgress ? (
+          <span className="text-[12px] text-muted-foreground/65">
+            In progress
+          </span>
+        ) : (
+          <ArrowUpRight
+            className="size-4 text-muted-foreground transition-[transform,color] duration-200 ease-out group-hover:text-[#D97706] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-data-[force-hover]:text-[#D97706] group-data-[force-hover]:-translate-y-0.5 group-data-[force-hover]:translate-x-0.5"
+          />
+        )}
+      </div>
+      <h3 className="mt-1.5 text-[17px] font-medium tracking-tight leading-snug">
+        {project.title}
+      </h3>
+      {project.role && (
+        <div className="mt-0.5 text-[13px] text-muted-foreground">
+          {project.role}
+        </div>
+      )}
+      <p
+        className={`text-[13px] leading-snug text-foreground/80 ${
+          project.role ? "mt-1.5" : "mt-2"
+        }`}
+      >
+        {project.description}
+      </p>
+      <p className="mt-2 text-[12px] text-muted-foreground/65">
+        {project.tags.join(" · ")}
+      </p>
+    </>
+  );
+
   return (
     <motion.li
       initial={{ opacity: 0, y: 6 }}
@@ -209,38 +273,22 @@ function DesktopRow({
       onMouseEnter={onHover}
       className="border-b border-border"
     >
-      <a
-        href={project.href ?? "#contact"}
-        data-force-hover={forceHover || undefined}
-        className={`group block px-3 -mx-3 py-3 rounded-md transition-colors duration-200 ease-out data-[force-hover]:bg-surface ${
-          active ? "bg-surface" : "hover:bg-surface"
-        }`}
-      >
-        <div className="flex items-baseline justify-between gap-4">
-          <YearLine project={project} />
-          <ArrowUpRight
-            className="size-4 text-muted-foreground transition-[transform,color] duration-200 ease-out group-hover:text-[#D97706] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-data-[force-hover]:text-[#D97706] group-data-[force-hover]:-translate-y-0.5 group-data-[force-hover]:translate-x-0.5"
-          />
-        </div>
-        <h3 className="mt-1.5 text-[17px] font-medium tracking-tight leading-snug">
-          {project.title}
-        </h3>
-        {project.role && (
-          <div className="mt-0.5 text-[13px] text-muted-foreground">
-            {project.role}
-          </div>
-        )}
-        <p
-          className={`text-[13px] leading-snug text-foreground/80 ${
-            project.role ? "mt-1.5" : "mt-2"
-          }`}
+      {project.inProgress ? (
+        <div
+          data-force-hover={forceHover || undefined}
+          className={wrapperClassName}
         >
-          {project.description}
-        </p>
-        <p className="mt-2 text-[12px] text-muted-foreground/65">
-          {project.tags.join(" · ")}
-        </p>
-      </a>
+          {body}
+        </div>
+      ) : (
+        <a
+          href={project.href ?? "#contact"}
+          data-force-hover={forceHover || undefined}
+          className={wrapperClassName}
+        >
+          {body}
+        </a>
+      )}
     </motion.li>
   );
 }
@@ -250,7 +298,13 @@ function MobileRow({ project }: { project: Project }) {
     <div className="mt-5">
       <div className="flex items-baseline justify-between gap-4">
         <YearLine project={project} />
-        <ArrowUpRight className="size-4 text-muted-foreground" />
+        {project.inProgress ? (
+          <span className="text-[12px] text-muted-foreground/65">
+            In progress
+          </span>
+        ) : (
+          <ArrowUpRight className="size-4 text-muted-foreground" />
+        )}
       </div>
       <h3 className="mt-2 text-[18px] font-medium tracking-tight leading-snug">
         {project.title}
