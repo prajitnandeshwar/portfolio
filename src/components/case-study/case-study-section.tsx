@@ -39,6 +39,30 @@ export function Prose({ children }: { children: ReactNode }) {
   );
 }
 
+// Lead paragraph. One step up from Prose: 19px, ink colour, sets the
+// register for a section's opening line. Used sparingly, no more than
+// once or twice per section.
+export function Lead({ children }: { children: ReactNode }) {
+  return (
+    <p className="text-[19px] text-[#1F1F1E] leading-[1.55] mb-4 last:mb-0">
+      {children}
+    </p>
+  );
+}
+
+// Pull quote. Larger weight, left-bordered, breaks the rhythm of the
+// surrounding prose. Use when a single sentence should pause the reader.
+export function Pull({ children }: { children: ReactNode }) {
+  return (
+    <p
+      className="text-[21px] font-semibold text-[#1F1F1E] leading-[1.45] my-7 pl-5"
+      style={{ borderLeft: "3px solid #1F1F1E", margin: "1.75rem 0" }}
+    >
+      {children}
+    </p>
+  );
+}
+
 // Inline emphasis: 600 weight, --text colour. Never a different size.
 export function Em({ children }: { children: ReactNode }) {
   return <strong className="font-semibold text-[#1F1F1E]">{children}</strong>;

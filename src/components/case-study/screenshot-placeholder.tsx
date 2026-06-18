@@ -70,23 +70,26 @@ export function ScreenshotPlaceholder({
     );
   }
 
+  // No src: render the placeholder treatment. Dashed border, soft
+  // cream background, the caption text centred inside as a muted
+  // description of the asset that will eventually go here. Designed so
+  // a real image becomes a one-line swap: add src={...} and the same
+  // caption keeps reading correctly.
   return (
     <div
       style={{
         aspectRatio: aspect,
-        backgroundColor: "#F4F1EB",
-        borderColor: "#E5E2DC",
+        backgroundColor: "#FAFAF9",
       }}
-      className="relative w-full rounded-xl border overflow-hidden flex items-center justify-center"
+      className="relative w-full rounded-xl overflow-hidden flex items-center justify-center px-6 md:px-12 py-6"
     >
-      <span
-        className="absolute top-4 left-5 text-[12px] uppercase tracking-[0.14em] text-muted-foreground"
-        style={{ margin: 0 }}
-      >
-        Real screenshot
-      </span>
-      <p className="text-[14px] md:text-[15px] text-[#6B6B68] text-center max-w-xl px-8 leading-relaxed">
-        {caption}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 rounded-xl"
+        style={{ border: "1.5px dashed #E5E2DC" }}
+      />
+      <p className="relative text-[13px] md:text-[14px] text-[#9C9C97] text-center max-w-xl leading-[1.5]">
+        Placeholder. {caption}
       </p>
     </div>
   );
