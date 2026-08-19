@@ -26,7 +26,7 @@ type Project = {
 const projects: Project[] = [
   {
     id: "notice-tracker",
-    year: "2024",
+    year: "2025",
     title: "Notice Tracker",
     description: "AI-powered platform for managing GST notices at scale.",
     role: "Lead Designer & PM",
@@ -36,7 +36,7 @@ const projects: Project[] = [
   },
   {
     id: "global-recon",
-    year: "2025",
+    year: "2026",
     status: "In design",
     title: "Global Recon",
     description:
