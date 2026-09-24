@@ -13,6 +13,7 @@ import { CaseStudySubLabel } from "@/components/case-study/case-study-sub-label"
 import { ScreenshotPlaceholder } from "@/components/case-study/screenshot-placeholder";
 import { HeroDashboardPlaceholder } from "@/components/case-study/hero-dashboard-placeholder";
 import { CaseIdAnimation } from "@/components/case-study/case-id-animation";
+import { Call } from "@/components/case-study/call";
 import { ArchitectureMap } from "@/components/case-study/architecture-map";
 import { RepliesOpening } from "@/components/case-study/replies-opening";
 import { PivotVisual } from "@/components/case-study/pivot-visual";
@@ -92,6 +93,18 @@ const TAKEAWAYS = [
       </p>
     ),
   },
+  {
+    number: "04",
+    heading: "Design for being wrong.",
+    body: (
+      <p>
+        The Case ID is inferred. The AI extraction is a guess. Both are
+        usually right and occasionally not. The design work was not making
+        them accurate. It was making sure a user could tell the difference
+        between what the system knew and what it had concluded.
+      </p>
+    ),
+  },
 ];
 
 export default function NoticeTrackerPage() {
@@ -112,7 +125,7 @@ export default function NoticeTrackerPage() {
           credits={[
             { label: "Role", value: "Lead Designer & PM" },
             { label: "Timeline", value: "2025" },
-            { label: "Read", value: "7 min" },
+            { label: "Read", value: "9 min" },
             { label: "Team", value: "Founder, Product, Engineering, Sales" },
           ]}
           visual={<HeroDashboardPlaceholder />}
@@ -204,6 +217,24 @@ export default function NoticeTrackerPage() {
           </Prose>
 
           <CaseIdAnimation />
+
+          <Call
+            title="Mirror the portal, or model the domain"
+            takeaway="Mirroring the source is the safe choice, and it means inheriting its problems. We chose to model the work instead, and took on the burden of proving it."
+          >
+            <p>
+              Our first instinct was to replicate what the government showed. Reference IDs, listed flat, the way the portal returns them.
+            </p>
+            <p>
+              That has a real argument behind it. Users already knew that view. Nothing in our product would contradict what they saw when they logged into the portal, and we would never have to defend a structure the government did not recognise.
+            </p>
+            <p>
+              The problem is that it inherits the portal&rsquo;s flaw. A flat list of reference IDs is not how a tax dispute works, and users were already doing the linking by hand, in spreadsheets, every month.
+            </p>
+            <p>
+              So we grouped on GSTIN first, then made the Case ID the spine. Reference IDs did not disappear. They became data points hanging off the case rather than the thing you navigate by.
+            </p>
+          </Call>
 
           <Prose>
             <p>
@@ -437,6 +468,33 @@ export default function NoticeTrackerPage() {
               list table view, so the team could triage at a glance instead of
               opening every document.
             </p>
+          </Prose>
+
+          <Call
+            title="When the AI should say nothing"
+            takeaway="The AI’s job was to speed up triage, not to become the record. Marking what it produced, and staying silent when unsure, was what let it do that safely."
+          >
+            <p>
+              Parsing demand amount, section and due date into the case list was the most useful thing the AI did. It was also the most dangerous.
+            </p>
+            <p>
+              A team triaging from that table decides what to touch first. If a demand amount is extracted wrongly, someone deprioritises a notice worth crores and never opens the PDF that would have told them.
+            </p>
+            <p>
+              Two decisions made that survivable.
+            </p>
+            <p>
+              First, extracted values never pretend to be portal values. Every AI-populated field carries a Clear AI marker, and hovering it says where the value came from. A user reading the table always knows which numbers the government sent and which ones we read.
+            </p>
+            <p>
+              Second, the model leaves a field blank rather than guessing. We reviewed more than a hundred real notices by hand to tune where that line sat. An empty cell sends someone to the PDF. A confident wrong number stops them from going.
+            </p>
+            <p>
+              What I would change: the source PDF sat two clicks away, inside attachments. For the one field a user most wants to check, that is one click too many.
+            </p>
+          </Call>
+
+          <Prose>
             <p>
               We shipped it in phases. Early Access first, with a small cohort
               of real customers feeding us their actual notices for training.
