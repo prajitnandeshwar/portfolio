@@ -25,38 +25,50 @@ type Project = {
 
 const projects: Project[] = [
   {
+    id: "tax-assurance",
+    year: "2026",
+    status: "In market",
+    title: "Tax Assurance",
+    description:
+      "Designing VAT and SST returns a finance team can trust enough to sign.",
+    tags: ["B2B", "AI", "Built with an agent", "Multi country"],
+    href: "/work/tax-assurance",
+    image: "/work/tax-assurance/france-executive-summary.png",
+  },
+  {
     id: "notice-tracker",
     year: "2025",
     title: "Notice Tracker",
     description: "AI-powered platform for managing GST notices at scale.",
-    role: "Lead Designer & PM",
     tags: ["B2B", "AI", "0→1", "₹2.3Cr ARR"],
     href: "/work/notice-tracker",
     image: "/work/notice-tracker.png",
   },
   {
-    id: "global-recon",
-    year: "2026",
-    status: "In design",
-    title: "Global Recon",
+    id: "payment-recommendations",
+    year: "2025",
+    title: "Payment Recommendations",
     description:
-      "Multi-jurisdictional reconciliation for global indirect tax compliance.",
-    tags: ["B2B", "Multi-jurisdictional", "Compliance"],
-    ndaTag: "Pre-launch",
-    image: "/work/global-recon.png",
+      "Max ITC payment recommendations. Block, release, and audit vendor invoices across thousands of vouchers.",
+    tags: ["B2B", "Max ITC", "Vendor invoices"],
+    image: "/work/payment-recommendations/closed.png",
     inProgress: true,
   },
-  {
-    id: "clear-assurance",
-    year: "2023",
-    status: "Unshipped",
-    title: "Clear Assurance",
-    description:
-      "Proactive indirect tax intelligence dashboard. Multiple iterations, ultimately did not ship.",
-    tags: ["B2B", "Strategy", "Data viz"],
-    image: "/work/clear-assurance.png",
-    inProgress: true,
-  },
+  // Global Recon held this slot. Tax Assurance covers the same ground
+  // (multi country indirect tax reconciliation) with a real case study
+  // behind it, so it took the slot. Put this back if you want both.
+  // {
+  //   id: "global-recon",
+  //   year: "2026",
+  //   status: "In design",
+  //   title: "Global Recon",
+  //   description:
+  //     "Multi-jurisdictional reconciliation for global indirect tax compliance.",
+  //   tags: ["B2B", "Multi-jurisdictional", "Compliance"],
+  //   ndaTag: "Pre-launch",
+  //   image: "/work/global-recon.png",
+  //   inProgress: true,
+  // },
   {
     id: "mint-design-system",
     year: "2024",

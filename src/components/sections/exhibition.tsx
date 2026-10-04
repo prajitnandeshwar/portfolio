@@ -26,14 +26,13 @@ type Tile = {
 
 const tiles: Tile[] = [
   {
-    id: "payment-rec",
-    name: "Payment Recommendations",
-    year: "2024",
+    id: "clear-assurance",
+    name: "Clear Assurance",
+    year: "2023",
     color: "#F5F2EE",
-    image: "/work/payment-recommendations/closed.png",
-    hoverImage: "/work/payment-recommendations/open.png",
+    image: "/work/clear-assurance.png",
     lightboxCaption:
-      "Max ITC payment recommendations. Block, release, and audit vendor invoices across thousands of vouchers.",
+      "Proactive indirect tax intelligence dashboard. Multiple iterations, ultimately did not ship.",
   },
   {
     id: "ims-vs-pr",
