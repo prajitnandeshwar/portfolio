@@ -32,6 +32,20 @@ export const metadata: Metadata = {
   title: "Tax Assurance",
   description:
     "Designing VAT and SST returns a finance team can trust enough to sign. Built country by country across Saudi Arabia, Malaysia and France.",
+  // Page specific cards. The image comes from opengraph-image.png in this
+  // folder, which takes precedence over the site wide one.
+  openGraph: {
+    title: "Tax Assurance · Prajit Nandeshwar",
+    description:
+      "Designing VAT and SST returns a finance team can trust enough to sign. Built country by country across Saudi Arabia, Malaysia and France.",
+    url: "https://prajitnandeshwar.in/work/tax-assurance",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tax Assurance · Prajit Nandeshwar",
+    description:
+      "Designing VAT and SST returns a finance team can trust enough to sign. Built country by country across Saudi Arabia, Malaysia and France.",
+  },
 };
 
 const CREDITS = [
@@ -42,7 +56,10 @@ const CREDITS = [
   { label: "Product", value: "Tax Assurance, on Clear's AI platform CTAI" },
   { label: "Timeline", value: "April to present" },
   { label: "Read", value: "10 min" },
-  { label: "Data", value: "Synthetic demo companies, and one real prospect, masked" },
+  {
+    label: "Data",
+    value: "Boards shown on synthetic demo companies. One real prospect, masked.",
+  },
 ];
 
 const STATS = [
@@ -227,7 +244,7 @@ const OUTCOMES = [
   { value: "6", label: "customers across Malaysia, Saudi Arabia and France" },
   { value: "3", label: "boards in market" },
   { value: "1", label: "proof of concept, on a prospect's own data" },
-  { value: "160", label: "lines of design system, down from 72,000 characters" },
+  { value: "14", label: "design conflicts ruled, once each" },
 ];
 
 const TAKEAWAYS = [
@@ -837,7 +854,7 @@ export default function TaxAssurancePage() {
           <Prose>
             <p>
               {
-                "Tax Assurance boards for Saudi Arabia, Malaysia and France, deployed and demo ready. A working proof of concept on a real prospect's data. And one design system with runnable audits, the standard for every Tax Assurance board and now used by the PMs and engineers who build with it."
+                "Tax Assurance boards for Saudi Arabia, Malaysia and France, in market with six customers across the three countries. A working proof of concept on a real prospect's data. And one design system with runnable audits, the standard for every Tax Assurance board and now used by the PMs and engineers who build with it."
               }
             </p>
             <p>
@@ -880,7 +897,7 @@ export default function TaxAssurancePage() {
             >
               <p>
                 {
-                  "Every company in this case study is invented and every figure generated, except the prospect section, where all visuals are masked and the business is described generically."
+                  "Every company shown in this case study is invented and every figure generated, except the prospect section, where all visuals are masked and the business is described generically."
                 }
               </p>
               <Link

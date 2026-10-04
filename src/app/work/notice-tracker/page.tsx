@@ -24,9 +24,26 @@ import { OutcomesSection } from "@/components/case-study/outcomes-section";
 import { WhatCameNext } from "@/components/case-study/what-came-next";
 
 export const metadata: Metadata = {
-  title: "Notice Tracker · Prajit Nandeshwar",
+  // The root layout appends " · Prajit Nandeshwar" via its title
+  // template, so this is just the page name. Setting the full string
+  // here is what made the tab read the name twice.
+  title: "Notice Tracker",
   description:
     "AI-augmented platform for managing GST notices at scale. 100+ enterprises, 85% adoption, ₹2.3Cr ARR.",
+  // Page specific cards. The image comes from opengraph-image.png in this
+  // folder, which takes precedence over the site wide one.
+  openGraph: {
+    title: "Notice Tracker · Prajit Nandeshwar",
+    description:
+      "AI-augmented platform for managing GST notices at scale. 100+ enterprises, 85% adoption, ₹2.3Cr ARR.",
+    url: "https://prajitnandeshwar.in/work/notice-tracker",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Notice Tracker · Prajit Nandeshwar",
+    description:
+      "AI-augmented platform for managing GST notices at scale. 100+ enterprises, 85% adoption, ₹2.3Cr ARR.",
+  },
 };
 
 const STATS = [
@@ -98,10 +115,9 @@ const TAKEAWAYS = [
     heading: "Design for being wrong.",
     body: (
       <p>
-        The Case ID is inferred. The AI extraction is a guess. Both are
-        usually right and occasionally not. The design work was not making
-        them accurate. It was making sure a user could tell the difference
-        between what the system knew and what it had concluded.
+        The AI extraction is usually right and occasionally not. The design
+        work was not making it perfect. It was making sure a user could tell
+        what the government sent from what the system read.
       </p>
     ),
   },
@@ -239,8 +255,7 @@ export default function NoticeTrackerPage() {
           <Prose>
             <p>
               So we built the entire product around a single insight: every
-              interaction, every screen, every interaction model anchors to a
-              stable Case ID.
+              screen and every interaction model anchors to a stable Case ID.
             </p>
             <p>
               This single decision simplified the entire information
