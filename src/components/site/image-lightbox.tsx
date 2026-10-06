@@ -104,7 +104,13 @@ export function ImageLightbox({
         // Override DialogContent defaults so it owns the full viewport:
         // no card padding, no max-width, no ring, no centered translate.
         // The actual visible card sits inside.
-        className="fixed inset-0 top-0 left-0 z-[60] flex items-center justify-center translate-x-0 translate-y-0 max-w-none w-screen h-[100dvh] gap-0 rounded-none p-4 bg-black/75 ring-0"
+        //
+        // sm:max-w-none is load bearing. DialogContent's defaults include
+        // sm:max-w-sm, and tailwind-merge keeps a responsive variant and a
+        // base one as separate keys, so plain max-w-none does not beat it.
+        // Without this the lightbox renders 384px wide above 640px, as a
+        // panel pinned to the left edge rather than the full viewport.
+        className="fixed inset-0 top-0 left-0 z-[60] flex items-center justify-center translate-x-0 translate-y-0 max-w-none sm:max-w-none w-screen h-[100dvh] gap-0 rounded-none p-4 bg-black/75 ring-0"
       >
         <DialogTitle className="sr-only">{title}</DialogTitle>
         {caption && (
