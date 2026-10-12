@@ -104,20 +104,6 @@ export function About() {
                 </li>
               ))}
             </ul>
-            <SubBlock title="Speaking">
-              <ul className="space-y-2.5" style={{ margin: 0 }}>
-                {speaking.map((item) => (
-                  <li
-                    key={item.title}
-                    className="text-base leading-snug"
-                    style={{ margin: 0 }}
-                  >
-                    {item.title}
-                    <span className="text-muted-foreground"> · {item.venue}</span>
-                  </li>
-                ))}
-              </ul>
-            </SubBlock>
           </Column>
 
           <Column title="Previously">
@@ -150,20 +136,47 @@ export function About() {
                 </li>
               ))}
             </ul>
-            <SubBlock title="Outside work">
-              <ul className="space-y-2.5" style={{ margin: 0 }}>
-                {outsideWork.map((item) => (
-                  <li
-                    key={item}
-                    className="text-base leading-snug"
-                    style={{ margin: 0 }}
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </SubBlock>
           </Column>
+        </motion.div>
+
+        {/* Second tier. Its own grid row rather than a tail pinned inside
+            each column, so Speaking and Outside work start below every
+            first tier list instead of cutting across the longest one. */}
+        <motion.div
+          variants={reveal}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-60px" }}
+          className="grid grid-cols-1 md:grid-cols-12 gap-x-10 gap-y-12 pt-12"
+        >
+          <SubBlock title="Speaking">
+            <ul className="space-y-2.5" style={{ margin: 0 }}>
+              {speaking.map((item) => (
+                <li
+                  key={item.title}
+                  className="text-base leading-snug"
+                  style={{ margin: 0 }}
+                >
+                  {item.title}
+                  <span className="text-muted-foreground"> · {item.venue}</span>
+                </li>
+              ))}
+            </ul>
+          </SubBlock>
+
+          <SubBlock title="Outside work" className="md:col-start-9">
+            <ul className="space-y-2.5" style={{ margin: 0 }}>
+              {outsideWork.map((item) => (
+                <li
+                  key={item}
+                  className="text-base leading-snug"
+                  style={{ margin: 0 }}
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </SubBlock>
         </motion.div>
       </div>
     </section>
@@ -196,15 +209,17 @@ function Column({
 function SubBlock({
   title,
   children,
+  className = "",
 }: {
   title: string;
   children: React.ReactNode;
+  className?: string;
 }) {
-  // Nested second-tier block under a Column. mt-auto pushes it to the
-  // bottom of the parent column so SPEAKING and OUTSIDE WORK land on the
-  // same baseline; pt-12 sets the consistent minimum gap above each.
+  // Second-tier block. Sits in its own grid row under the three columns,
+  // so these labels share a baseline no matter which first tier list is
+  // longest. The row supplies the gap above.
   return (
-    <div className="mt-auto pt-12">
+    <div className={`md:col-span-4 ${className}`}>
       <h3
         className="text-[12px] uppercase tracking-[0.14em] text-muted-foreground"
         style={{ margin: 0, marginBottom: "1.25rem" }}
