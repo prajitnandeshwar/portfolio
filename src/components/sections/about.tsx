@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 const currently = [
-  "Leading design at Clear (B2B Tax GRC)",
-  "Prototyping with Claude Code",
-  "Designing AI surfaces for compliance products",
+  "Leading design for Clear\u2019s B2B Tax GRC portfolio",
+  "Designing and building Tax Assurance with AI agents",
+  "Building the design system that renders our boards",
 ];
 
 const previously = [
@@ -14,10 +14,11 @@ const previously = [
   { period: "Mar 2022 to Oct 2024", role: "Senior Product Designer", company: "Clear" },
   { period: "Mar 2021 to Mar 2022", role: "Product Designer", company: "Clear" },
   { period: "Aug 2020 to Feb 2021", role: "Product Design Intern", company: "Freshworks" },
+  { period: "Aug 2016 to May 2018", role: "Manager", company: "Tata Motors (Foundry Maintenance)" },
 ];
 
 const education = [
-  { period: "2018 to 2021", degree: "Masters in Digital Game Design", school: "NID Bangalore" },
+  { period: "2018 to 2021", degree: "M.Des, Digital Game Design", school: "NID Bangalore" },
   { period: "2012 to 2016", degree: "B.Tech in Electrical and Electronics", school: "NIT Trichy" },
 ];
 
@@ -63,7 +64,7 @@ export function About() {
 
           <div className="md:col-span-7 md:col-start-6 space-y-5 text-base leading-[1.7] text-foreground/85 max-w-prose">
             <p>
-              I have spent the last 5 years at Clear shipping enterprise compliance software for India and abroad. My work spans Tax GRC, AI-augmented design, and design systems across 8 products serving 1,500+ enterprise customers across India, UAE, Saudi Arabia, Malaysia, and France.
+              I have spent the last 5 years at Clear shipping enterprise compliance software for India and abroad. My work spans Tax GRC, AI-augmented design, and design systems across 8 products serving 1,500+ enterprise customers across India, UAE, Saudi Arabia, Malaysia, and France. I was promoted twice in under four years, from Product Designer to Lead.
             </p>
             <p className="text-muted-foreground">
               I gravitate toward complex domains where regulations change quarterly, the data is messy, and users are experts who do not tolerate bad software. That is where design has the most leverage.
@@ -93,13 +94,12 @@ export function About() {
           className="grid grid-cols-1 md:grid-cols-12 gap-x-10 gap-y-12 border-t border-border pt-12"
         >
           <Column title="Currently">
-            <ul className="space-y-2.5" style={{ margin: 0 }}>
+            <ul className="space-y-3.5" style={{ margin: 0 }}>
               {currently.map((item) => (
-                <li
-                  key={item}
-                  className="text-base"
-                  style={{ margin: 0 }}
-                >
+                // No inline margin reset here: it would override the
+                // list's space-y and butt the items together, which only
+                // showed once these lines grew long enough to wrap.
+                <li key={item} className="text-base leading-snug">
                   {item}
                 </li>
               ))}
