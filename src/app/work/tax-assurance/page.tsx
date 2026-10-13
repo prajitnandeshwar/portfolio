@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { Nav } from "@/components/site/nav";
 import { Footer } from "@/components/site/footer";
 import { CaseStudyHero } from "@/components/case-study/case-study-hero";
@@ -15,15 +14,16 @@ import {
 } from "@/components/case-study/case-study-layout";
 import { StatRow } from "@/components/case-study/stat-row";
 import { Figure, Frame } from "@/components/case-study/figure";
+import { Reveal } from "@/components/case-study/reveal";
+import { VideoFigure } from "@/components/case-study/video-figure";
+import { HeroLayers } from "@/components/case-study/hero-layers";
 import { ChainDiagram } from "@/components/case-study/chain-diagram";
 import { CountryMatrix } from "@/components/case-study/country-matrix";
 import { RulingsTable } from "@/components/case-study/rulings-table";
 import { ArchitectureDiagram } from "@/components/case-study/architecture-diagram";
-import { AuditTerminal } from "@/components/case-study/audit-terminal";
 import { LimitCards } from "@/components/case-study/limit-cards";
 import { LiveEmbed } from "@/components/case-study/live-embed";
 import { Takeaways } from "@/components/case-study/takeaways";
-import { OutcomesSection } from "@/components/case-study/outcomes-section";
 import { Call } from "@/components/case-study/call";
 
 export const metadata: Metadata = {
@@ -39,35 +39,41 @@ export const metadata: Metadata = {
     description:
       "Designing VAT and SST returns a finance team can trust enough to sign. Built country by country across Saudi Arabia, Malaysia and France.",
     url: "https://prajitnandeshwar.in/work/tax-assurance",
+    images: [
+      {
+        url: "/work/tax-assurance/hero/og-tax-assurance.png",
+        width: 1200,
+        height: 630,
+        alt: "The France, Saudi Arabia and Malaysia Tax Assurance boards",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Tax Assurance · Prajit Nandeshwar",
     description:
       "Designing VAT and SST returns a finance team can trust enough to sign. Built country by country across Saudi Arabia, Malaysia and France.",
+    images: ["/work/tax-assurance/hero/og-tax-assurance.png"],
   },
 };
 
 const CREDITS = [
-  {
-    label: "Role",
-    value: "Lead Designer. Designed and built with an agent in the terminal",
-  },
+  { label: "Role", value: "Lead Designer. Designed and built with AI agents" },
   { label: "Product", value: "Tax Assurance, on Clear's AI platform CTAI" },
   { label: "Timeline", value: "April to present" },
-  { label: "Read", value: "10 min" },
+  { label: "Read", value: "12 min" },
   {
     label: "Data",
-    value: "Boards shown on synthetic demo companies. One real prospect, masked.",
+    value: "Synthetic demo companies, and one real prospect, masked",
   },
 ];
 
 const STATS = [
+  { value: "6", label: "customers, in market" },
   { value: "3", label: "tax regimes" },
   { value: "18", label: "coded ZATCA findings" },
-  { value: "27", label: "bugs caught by proving the numbers" },
   { value: "26", label: "automated design checks" },
-  { value: "6", label: "real customers, three countries" },
+  { value: "1", label: "real prospect, proof of concept" },
 ];
 
 const CHAIN = [
@@ -224,28 +230,6 @@ const ARCH = [
   },
 ];
 
-const AUDIT = [
-  { label: "the page declares a doctype", detail: "standards mode" },
-  { label: "the board's own values survive the host theme", detail: "identical under both" },
-  { label: "every screen renders with no JavaScript error", detail: "8 screens" },
-  { label: "the content pane scrolls", detail: "scrolled to 381px" },
-  { label: "the nav stays pinned while the content scrolls", detail: "fixed" },
-  { label: "every selected control meets WCAG AA (4.5:1)", detail: ".segbtn.on = 17.76:1" },
-  { label: "every descendant styled class has its ancestor", detail: "11 classes across 8 screens" },
-  { label: "every table row matches its header", detail: "8 screens walked" },
-  { label: "charts render at non zero size, leave no orphan", detail: "canvases 2/2, live 2" },
-  { label: "the grid is visually identical to .table", detail: "8 computed properties" },
-  { label: "every export produces a populated sheet", detail: "5 sheets" },
-  { label: "the page never scrolls horizontally", detail: "1366, 1180, 1024, 820" },
-];
-
-
-const OUTCOMES = [
-  { value: "6", label: "customers across Malaysia, Saudi Arabia and France" },
-  { value: "3", label: "boards in market" },
-  { value: "1", label: "proof of concept, on a prospect's own data" },
-  { value: "14", label: "design conflicts ruled, once each" },
-];
 
 const TAKEAWAYS = [
   {
@@ -288,26 +272,11 @@ export default function TaxAssurancePage() {
           backLabel="All work"
           title="Tax Assurance"
           accentChar="."
-          tagline="Designing VAT and SST returns a finance team can trust enough to sign. Built country by country across Saudi Arabia, Malaysia and France, then tested on a real prospect's own data."
+          tagline="Designing VAT and SST returns a finance team can trust enough to sign. Built with AI agents, country by country, across Saudi Arabia, Malaysia and France."
           credits={CREDITS}
           visual={
             <figure style={{ margin: 0 }}>
-              {/* No frame: the composite carries its own soft shadows and
-                  its background has been matched to the page, so a border
-                  and a surface fill would only draw a second box around it.
-                  Bleeds slightly into the right gutter on wide screens so
-                  the boards read a little larger. */}
-              <div className="relative w-full min-[1200px]:w-[110%]">
-                <Image
-                  src="/work/tax-assurance/hero-three-boards-clean.png"
-                  alt="The France, Saudi and Malaysia Tax Assurance boards"
-                  width={2346}
-                  height={989}
-                  priority
-                  sizes="(max-width: 768px) 100vw, 700px"
-                  className="block w-full h-auto"
-                />
-              </div>
+              <HeroLayers />
               <figcaption
                 className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[14px] text-[#6B6B68] leading-[1.5]"
                 style={{ margin: 0, marginTop: "1rem" }}
@@ -331,22 +300,81 @@ export default function TaxAssurancePage() {
         {/* 2 · Stats strip */}
         <StatRow stats={STATS} />
 
-        {/* 3 · A number someone signs */}
-        <CaseStudySection title="A number someone signs">
+        {/* 3 · A return someone signs */}
+        <CaseStudySection title="A return someone signs">
           <Prose>
             <p>
               {
-                "A VAT or SST return is a legal declaration with a person's name on it. Before filing, a tax team reconciles its books against the government's e-invoice records, finds what disagrees, and decides what to fix. Tax Assurance is the board they do that on."
+                "A VAT or SST return is a legal declaration with a person's name on it. Before it is filed, a tax manager reconciles the books against the government's e-invoice records, finds what disagrees, and decides what to fix. Then someone senior signs."
               }
             </p>
             <p>
               {
-                "Every design decision came back to one question: would a finance team sign a return based on this screen? I built it one country at a time: Saudi Arabia, then Malaysia, then France. I sat with each tax team, built the board with an agent, and validated it with them as I went. The agent wrote most of the code. I set the direction, made the calls, and judged the output. Then a real prospect tested the approach on their own data."
+                "When I started, that work lived in two dashboards: one to reconcile, one to prepare the return. Both read the same data. A tax manager found a problem in one, then went looking for the same document in the other, and had to trust that the two agreed."
               }
             </p>
             <p>
               {
-                "Every board shares one shape. It is the one thing I did not let vary by country."
+                "Every design decision after that came back to one question: would the person signing trust what is on this screen?"
+              }
+            </p>
+          </Prose>
+        </CaseStudySection>
+
+        {/* 4 · Built on CTAI */}
+        <CaseStudySection title="Built on CTAI">
+          <Prose>
+            <p>
+              {
+                "Every Tax Assurance board lives on CTAI, Clear's AI platform. Boards are not shipped by an engineering team. A builder works with an agent, which writes the queries over the account's data and the board itself, and the platform publishes it to a shared library. A tax team opens it there, shares it, and can question it in chat. The platform is Clear's. The boards, the patterns and the system that renders them are mine."
+              }
+            </p>
+          </Prose>
+
+          <Figure
+            src="/work/tax-assurance/ctai-platform-board.png"
+            alt="A Tax Assurance board inside CTAI, with the platform's chat open beside it"
+            width={1600}
+            height={875}
+            caption="A board inside CTAI. The chat is the platform's."
+            tag="Demo data"
+          />
+        </CaseStudySection>
+
+        {/* 5 · Two dashboards became one product */}
+        <CaseStudySection title="Two dashboards became one product">
+          <Reveal>
+            <Call
+              title="Two dashboards, or one"
+              takeaway="If two screens read the same data to answer one question, they are one product."
+            >
+              <p>
+                {
+                  "I had built the reconciliation and the SST filing as two separate dashboards. Once both were on the platform, I looked at them side by side. They read the same data, and a tax team only reconciles in order to file."
+                }
+              </p>
+              <p>
+                {
+                  "Keeping them apart meant finding the same document twice, in two tools, and trusting that two boards agreed. So I merged them into one, with reconciliation and filing as two sections of the same navigation. The cost was a bigger board, and a navigation that had to carry two jobs without either burying the other."
+                }
+              </p>
+            </Call>
+          </Reveal>
+
+          <Figure caption="Reconciliation and filing, read from the same data, became one board.">
+            <VideoFigure
+              src="/work/tax-assurance/merge.mp4"
+              poster="/work/tax-assurance/merge-poster.png"
+              alt="The reconciliation board and the filing board merging into one"
+              width={1280}
+              height={720}
+            />
+          </Figure>
+
+          <Prose>
+            <p>
+              {
+                "That combined board became Tax Assurance, which is how the product is sold today. Every board since follows the same chain, in every country."
               }
             </p>
           </Prose>
@@ -356,58 +384,10 @@ export default function TaxAssurancePage() {
               <ChainDiagram steps={CHAIN} />
             </Frame>
           </Figure>
-
-          <Prose>
-            <p>{"Almost everything on top of that chain changed by country."}</p>
-          </Prose>
-
-          <Figure caption="What changed between countries, and what was not allowed to.">
-            <Frame>
-              <CountryMatrix
-                countries={["Malaysia", "Saudi Arabia", "France"]}
-                rows={MATRIX_ROWS}
-              />
-            </Frame>
-          </Figure>
         </CaseStudySection>
 
-        {/* 5 · Built on CTAI */}
-        <CaseStudySection title="Built on CTAI">
-          <Prose>
-            <p>
-              {
-                "CTAI is Clear's AI platform. Finance teams build agents on it to solve their own problems. Every Tax Assurance board lives there."
-              }
-            </p>
-            <p>
-              {
-                "Boards are not shipped by an engineering team. A builder works with an agent: the agent writes the queries over the account's data and the board itself, a single file app, and the platform publishes it to a shared library. A tax team opens it there, shares it, and can question it in chat."
-              }
-            </p>
-            <p>
-              {
-                "That changes where design sits. There is no design file and no handoff. Whatever the builder and the agent produce is what the customer sees. So the design system is not a reference document. It is the only thing between a builder and a board that looks like nobody designed it."
-              }
-            </p>
-            <p>
-              {
-                "The platform is Clear's. The boards, the patterns and the system that renders them are mine."
-              }
-            </p>
-          </Prose>
-
-          <Figure
-            src="/work/tax-assurance/ctai-platform-board.png"
-            alt="A Tax Assurance board inside CTAI, with the platform's chat open beside it"
-            width={3024}
-            height={1654}
-            caption="A board inside CTAI. The chat is the platform's."
-            tag="Demo data"
-          />
-        </CaseStudySection>
-
-        {/* 4 · Saudi Arabia */}
-        <CaseStudySection title="Saudi Arabia: where the patterns came from">
+        {/* 5 · The first board: Saudi Arabia */}
+        <CaseStudySection title="The first board: Saudi Arabia">
           <Prose>
             <p>
               {
@@ -431,67 +411,64 @@ export default function TaxAssurancePage() {
             tag="Demo data"
           />
 
-          <Call
-            title="Simple buckets, or the true picture"
-            takeaway="Decide a finding once, where the data lives, and nowhere else."
-          >
-            <p>
-              {
-                "A client then said the reconciliation looked very simple and was not capturing the true picture. They were right. Matched, mismatched and missing were cosmetic."
-              }
-            </p>
-            <p>
-              {
-                "So the buckets became eighteen findings drawn from how ZATCA actually treats documents: stamp missing, rejected by ZATCA, rate against category, simplified invoice where a standard one was required, buyer VAT number missing, credit note with no original, wrong period, late reporting. Each carries its own rule for tax at risk and its own what to do."
-              }
-            </p>
-            <p>
-              {
-                "Each code is assigned once, in the query that reads the data. The summary, the document list and the filters cannot disagree, because none of them decides anything."
-              }
-            </p>
-          </Call>
+          <Reveal>
+            <Call
+              title="Simple buckets, or the true picture"
+              takeaway="Decide a finding once, where the data lives, and nowhere else."
+            >
+              <p>
+                {
+                  "A client then said the reconciliation looked very simple and was not capturing the true picture. They were right. Matched, mismatched and missing were cosmetic."
+                }
+              </p>
+              <p>
+                {
+                  "So the buckets became eighteen findings drawn from how ZATCA actually treats documents: stamp missing, rejected by ZATCA, rate against category, simplified invoice where a standard one was required, buyer VAT number missing, credit note with no original, wrong period, late reporting. Each carries its own rule for tax at risk and its own what to do."
+                }
+              </p>
+              <p>
+                {
+                  "Each code is assigned once, in the query that reads the data. The summary, the document list and the filters cannot disagree, because none of them decides anything."
+                }
+              </p>
+            </Call>
+          </Reveal>
 
           <Figure
-            src="/work/tax-assurance/ksa-recon-summary.png"
-            alt="Saudi recon summary with findings"
-            width={2160}
-            height={1737}
-            cropHeight={760}
-            caption="Each status opens into the findings behind it, in plain language."
+            caption="Three cosmetic buckets became eighteen findings, each in its own row on the board."
             tag="Demo data"
-          />
+          >
+            <VideoFigure
+              src="/work/tax-assurance/findings.mp4"
+              poster="/work/tax-assurance/findings-poster.png"
+              alt="Three reconciliation buckets opening into eighteen coded findings"
+              width={1280}
+              height={720}
+            />
+          </Figure>
 
-          <SubHeading>Build it in, or hand it to the agent</SubHeading>
-          <Prose>
-            <p>
-              {
-                "Auditing the e-invoices against ZATCA's own cleared feed is a real need, but that feed is not held in the workspace. Building it into the board would mean ingesting data the board does not own, for a check that runs during an audit, not every month."
-              }
-            </p>
-            <p>
-              {
-                "So the board explains when the check is needed and writes the prompt for it. The user exports the ZATCA report, opens a chat, attaches it and pastes the prompt. The agent matches both sides and builds its own report. The boundary is stated on the screen: the agent's work does not change this filing."
-              }
-            </p>
-            <p>
-              {
-                "The same board has a small ask box for quick questions, with the board's computed figures passed to the model as context."
-              }
-            </p>
-            <p>
-              {
-                "My part was deciding what the board hands to an agent, and what it keeps away from one."
-              }
-            </p>
-            <p>
-              <Em>
+          <Reveal>
+            <Call
+              title="Build it in, or hand it to the agent"
+              takeaway="Give the agent the one-off work. Keep it away from the number being filed."
+            >
+              <p>
                 {
-                  "Give the agent the one-off work. Keep it away from the number being filed."
+                  "Auditing the e-invoices against ZATCA's own cleared feed is a real need, but that feed is not held in the workspace. Building it into the board would mean ingesting data the board does not own, for a check that runs during an audit, not every month."
                 }
-              </Em>
-            </p>
-          </Prose>
+              </p>
+              <p>
+                {
+                  "So the board explains when the check is needed and writes the prompt for it. The user exports the ZATCA report, opens a chat, attaches it and pastes the prompt. The agent matches both sides and builds its own report. The boundary is stated on the screen: the agent's work does not change this filing."
+                }
+              </p>
+              <p>
+                {
+                  "My part was deciding what the board hands to an agent, and what it keeps away from one."
+                }
+              </p>
+            </Call>
+          </Reveal>
 
           <Figure
             src="/work/tax-assurance/ksa-zatca-helper.png"
@@ -503,43 +480,31 @@ export default function TaxAssurancePage() {
           />
         </CaseStudySection>
 
-        {/* 6 · Malaysia */}
-        <CaseStudySection title="Malaysia: two dashboards became one product">
-          <Call
-            title="Two dashboards, or one"
-            takeaway="If two screens read the same data to answer one question, they are one product."
-          >
-            <p>
-              {
-                "I had built the SST reconciliation and the SST-02 filing as two separate dashboards. Once both were on the platform, I looked at them side by side. They read the same data, and a tax team only reconciles in order to file."
-              }
-            </p>
-            <p>
-              {
-                "Keeping them apart meant finding the same document twice, in two tools, and trusting that two boards agreed. So I merged them into one, with reconciliation and filing as two sections of the same navigation. The cost was a bigger board, and a navigation that had to carry two jobs without either burying the other."
-              }
-            </p>
-          </Call>
-
+        {/* 6 · Making it travel */}
+        <CaseStudySection title="Making it travel">
           <Prose>
             <p>
               {
-                "That combined board became Tax Assurance, and it is why every board has the shape shown at the top of this page."
+                "A tax team in Malaysia or France does the same job as one in Saudi Arabia. Almost nothing else is the same: different returns, different rates, different government records to reconcile against."
+              }
+            </p>
+            <p>
+              {
+                "So everything that belongs to a country lives in its own logic, and everything a person sees comes from one shared system. A new country means new rules, not a new product."
               }
             </p>
           </Prose>
 
-          <Figure
-            src="/work/tax-assurance/my-executive-summary.png"
-            alt="Malaysia executive summary"
-            width={2160}
-            height={3263}
-            cropHeight={760}
-            caption="The merged board. Reconciliation and SST-02 filing in one navigation, opening on a verdict."
-            tag="Demo data"
-          />
+          <Figure caption="What changed between countries, and what was not allowed to.">
+            <Frame>
+              <CountryMatrix
+                countries={["Malaysia", "Saudi Arabia", "France"]}
+                rows={MATRIX_ROWS}
+              />
+            </Frame>
+          </Figure>
 
-          <SubHeading>Rules about numbers</SubHeading>
+          <SubHeading>Malaysia: what a number means</SubHeading>
           <Prose>
             <p>
               {
@@ -548,41 +513,22 @@ export default function TaxAssurancePage() {
             </p>
           </Prose>
 
-          <div className="my-10">
-            <LimitCards limits={MY_LIMITS} />
-          </div>
+          <Reveal>
+            <div className="my-10">
+              <LimitCards limits={MY_LIMITS} />
+            </div>
+          </Reveal>
 
           <Prose>
             <p>
               {
-                "The numbers are proved, not trusted. A separate classifier re-derives every document's status from the raw rows, and a test asserts it matches the scenario that generated it, for all 1,255 documents. It caught 27 real bugs. One: adding 25 days to the 2nd of a month stays in the same month, so a document cleared next period was silently marked matched."
+                "The numbers are proved, not trusted. A separate classifier re-derives every document's status from the raw rows, and a test asserts it matches the scenario that generated it, for all 1,255 documents. It caught 27 real bugs."
               }
             </p>
             <p>
               {
-                "Then the customer replied with two kinds of correction. Three mapping corrections moved the return by RM 0.00, because the tax code sets the rate. Confirmed re-codings in the ledger moved it by RM 6,522.10."
+                "Then the customer replied with two kinds of correction. Three mapping corrections moved the return by RM 0.00, because the tax code sets the rate. Confirmed re-codings in the ledger moved it by RM 6,522.10. Revision 1 stays frozen as filed, revision 2 is a separate board, and the build fails if any revision 1 file changes. What changed between them is computed, never typed."
               }
-            </p>
-          </Prose>
-
-          <SubHeading>Stating the change, or computing it</SubHeading>
-          <Prose>
-            <p>
-              {
-                "The quick way to show a revision is to overwrite the numbers and add a note. That is how a return quietly drifts from what was actually filed."
-              }
-            </p>
-            <p>
-              {
-                "So revision 1 stays frozen as filed, and revision 2 is a separate board. The build fails if any revision 1 file changes. A What changed screen computes the difference from both datasets and puts both kinds of correction side by side, so the customer can see why some of their changes moved the return and some could not."
-              }
-            </p>
-            <p>
-              <Em>
-                {
-                  "A filed number never changes quietly."
-                }
-              </Em>
             </p>
           </Prose>
 
@@ -595,45 +541,38 @@ export default function TaxAssurancePage() {
             caption="What changed. Every figure computed, none entered by hand."
             tag="Demo data"
           />
-        </CaseStudySection>
 
-        {/* 7 · France */}
-        <CaseStudySection title="France: the return as a declaration">
+          <SubHeading>France: the return as a declaration</SubHeading>
           <Prose>
             <p>
               {
-                "France is moving to mandatory e-invoicing, so a single sale can go wrong in more ways than a missing invoice. It can be sent down the wrong lane, rejected by the buyer, or reported without its payment ever being confirmed. Every finding rolls up into one of seven outcomes, each marked review or resolve."
-              }
-            </p>
-          </Prose>
-
-          <SubHeading>The form shows the books. The findings live elsewhere.</SubHeading>
-          <Prose>
-            <p>
-              {
-                "The tempting design was to put every difference on the return, beside the box it affects. That turns a statutory form into a worksheet, and the person signing it can no longer tell what they are declaring from what is still disputed."
+                "France is moving to mandatory e-invoicing, so a single sale can go wrong in more ways than a missing invoice. It can be sent down the wrong lane, rejected by the buyer, or reported without its payment ever being confirmed."
               }
             </p>
             <p>
               {
-                "So the CA3 screen shows the return as the books state it. Differences live on the recon summary. Boxes backed by ledger lines drill into them, and only those boxes carry a link. Every screen ends on the same line: prepared draft, nothing filed or transmitted."
+                "The tempting design was to put every difference on the return, beside the box it affects. That turns a statutory form into a worksheet, and the person signing it can no longer tell what they are declaring from what is still disputed. So the CA3 filing form shows the return as the books state it, and the differences live on a screen of their own, VAT form exceptions. Every screen ends on the same line: prepared draft, not filed."
               }
-            </p>
-            <p>
-              <Em>
-                {
-                  "A return should read as a declaration, not a worksheet."
-                }
-              </Em>
             </p>
           </Prose>
 
           <Figure
-            src="/work/tax-assurance/france-ca3-return.png"
-            alt="CA3 return"
-            width={2160}
-            height={1478}
-            caption="The CA3 return in the form's own French labels, with English beneath."
+            src="/work/tax-assurance/france-ca3-filing-form.png"
+            alt="The CA3 filing form, box by box"
+            width={2348}
+            height={4952}
+            cropHeight={760}
+            caption="The CA3 filing form, as the books state it."
+            tag="Demo data"
+          />
+
+          <Figure
+            src="/work/tax-assurance/france-vat-form-exceptions.png"
+            alt="VAT form exceptions, the differences behind the return"
+            width={2348}
+            height={6716}
+            cropHeight={760}
+            caption="The differences, on a screen of their own."
             tag="Demo data"
           />
 
@@ -654,8 +593,8 @@ export default function TaxAssurancePage() {
           </div>
         </CaseStudySection>
 
-        {/* 8 · Then a real prospect */}
-        <CaseStudySection title="Then a real prospect">
+        {/* 7 · The real test */}
+        <CaseStudySection title="The real test">
           <Prose>
             <p>
               {
@@ -750,51 +689,35 @@ export default function TaxAssurancePage() {
           </Prose>
         </CaseStudySection>
 
-        {/* 9 · Making it repeatable */}
-        <CaseStudySection title="Making it repeatable">
+        {/* 8 · How it scales */}
+        <CaseStudySection title="How it scales">
           <Prose>
             <p>
               {
-                "By the time France was done, I had written three skills that each claimed to be the design system. All three were mine, written at different points along the way. They disagreed on more than twenty concrete points, and one contradicted itself, still describing a teal brand after the tokens had moved to near black."
+                "Because boards are built with agents, there is no design file and no handoff. Whatever the builder and the agent produce is what the customer sees. So the design system is not a reference document. It is the only thing between a builder and a board that looks like nobody designed it."
               }
             </p>
             <p>
               {
-                "That was survivable while I was the only builder, because the real rules lived in my head. It would not survive PMs and engineers building with it, or an agent following it literally."
+                "By the time France was done, my own design system had drifted. I had written three skills that each claimed to be the system, at different points along the way, and they disagreed on more than twenty concrete points. That was survivable while I was the only builder. It would not survive PMs and engineers building with it, or an agent following it literally."
               }
             </p>
             <p>
               {
-                "The tokens were identical across boards. What had drifted was the documentation, the thing an agent or another builder reads to reproduce the system."
+                "So I ruled once on every conflict, with a reason, and cut the system from 72,000 characters of prose to a manifest of about 160 lines. Filters are the clearest example: users wanted to filter on whichever column mattered to them, so filtering moved into the column headers and the filter bar went."
               }
             </p>
           </Prose>
 
-          <SubHeading>Rule once, or let every builder decide</SubHeading>
-          <Prose>
-            <p>
-              {
-                "The easy fix was to merge the three skills and soften the conflicts into guidance. That works only while one person knows which rule is the real one."
-              }
-            </p>
-            <p>
-              {
-                "So I ruled. Fourteen conflicts, each decided once, each with a reason, and the system cut from 72,000 characters to a manifest of about 160 lines."
-              }
-            </p>
-            <p>
-              {
-                "Filters are the clearest example. Boards used to carry a filter bar on top, and whoever built the board chose what went in it. It cost space, and users pushed back. These tables have many columns, and they wanted to filter on whichever one mattered to them. So filtering moved into the column headers. Every column filters, and the bar is gone."
-              }
-            </p>
-            <p>
-              <Em>
-                {
-                  "A design system that does not rule is a suggestion."
-                }
-              </Em>
-            </p>
-          </Prose>
+          <Figure caption="Three drifting skills became one short manifest, checked on every board.">
+            <VideoFigure
+              src="/work/tax-assurance/system.mp4"
+              poster="/work/tax-assurance/system-poster.png"
+              alt="Three conflicting design system skills reduced to one manifest"
+              width={1280}
+              height={720}
+            />
+          </Figure>
 
           <Figure caption="Six of the fourteen rulings. Each one names the conflict, decides it, and says why.">
             <Frame>
@@ -808,7 +731,7 @@ export default function TaxAssurancePage() {
           <Prose>
             <p>
               {
-                "I had built Malaysia by copying the Saudi board, and every copy carried the last country's assumptions. So the two concerns were split. A logic agent holds everything that belongs to a country: it maps an account's own tables onto a fixed column contract and a common tax code vocabulary, and checks the maths. One rendering skill draws everything a person sees. The acceptance test: the Saudi board, rebuilt through the skill alone, had to reproduce the hand built board byte for byte."
+                "Then I split the rules from the rendering. A logic agent holds everything that belongs to a country. One rendering skill draws everything a person sees. The acceptance test was blunt: the Saudi board, rebuilt through the skill alone, had to reproduce the hand built board byte for byte."
               }
             </p>
           </Prose>
@@ -822,73 +745,33 @@ export default function TaxAssurancePage() {
           <Prose>
             <p>
               {
-                "In a single file dashboard, almost every design mistake is silent. One selected control rendered white on near white inside the platform while correct locally, because the platform's injected theme overrode ours. No review could have caught it. So conformance became code: eleven static checks, and fifteen more in a real browser against a deliberately hostile theme. Every check is itself tested: break what it guards, confirm it fails, then revert. "
+                "In a single file dashboard, almost every design mistake is silent. So conformance became code: eleven static checks, and fifteen more in a real browser. Every check is itself tested: break what it guards, confirm it fails, then revert. Some things no check can catch, like a dense screen that reads as clutter. The audit is a floor, not a substitute for looking at the page."
               }
-              <Em>{'"It looks right" is not evidence.'}</Em>
             </p>
           </Prose>
 
-          <Figure caption="A clean render audit on the France VAT board. Design review, run in seconds, on every board.">
-            <AuditTerminal
-              command="$ python audit_render.py france_vat_assurance"
-              checks={AUDIT}
-            />
-          </Figure>
-
-          <Prose>
-            <p>
-              {
-                "Some things no check can catch: a summary that repeats its own detail and drifts from it, a row with two things to click, a dense screen that reads as clutter. Those came back from review, and they always will. "
-              }
-              <Em>
-                {
-                  "The audit is a floor, not a substitute for looking at the page."
-                }
-              </Em>
-            </p>
-          </Prose>
         </CaseStudySection>
 
-        {/* 10 · Where it landed */}
+        {/* 9 · Where it landed */}
         <CaseStudySection title="Where it landed">
           <Prose>
             <p>
               {
-                "Tax Assurance boards for Saudi Arabia, Malaysia and France, in market with six customers across the three countries. A working proof of concept on a real prospect's data. And one design system with runnable audits, the standard for every Tax Assurance board and now used by the PMs and engineers who build with it."
+                "Tax Assurance is in market with six customers across Saudi Arabia, Malaysia and France. A real prospect saw it work on their own data. And one design system, with runnable audits, is now what PMs and engineers build with."
               }
             </p>
             <p>
               {
-                "Next is a scheduled agent that emails a monthly management pack and alerts from the same tables. It is planned, not built."
+                "Not every board follows its own rules yet, and the audits measure what a board has, never what it used to have, so a dropped feature is still caught by a person."
               }
             </p>
           </Prose>
-        </CaseStudySection>
 
-        {/* 11 · What is still open */}
-        <CaseStudySection title="What is still open">
-          <Prose>
-            <p>
-              {
-                "Not every board follows its own rules yet: the French board has no verdict or agent handoff, and two headline cards show at-risk figures without naming their scope. And the audits measure what a board has, never what it used to have, so a dropped feature is still caught by a person."
-              }
-            </p>
-          </Prose>
-        </CaseStudySection>
-
-        {/* 12 · What I took from this */}
-        <CaseStudySection title="What I took from this">
+          <SubHeading>What I took from this</SubHeading>
           <Takeaways takeaways={TAKEAWAYS} />
         </CaseStudySection>
 
-        {/* 13 · Outcomes (dark) */}
-        <OutcomesSection
-          label="Outcomes"
-          title="What it adds up to."
-          outcomes={OUTCOMES}
-        />
-
-        {/* 13 · Closing note */}
+        {/* 10 · Closing note */}
         <section className="px-6 md:px-12 pb-16 md:pb-20">
           <div className="mx-auto max-w-[1080px]">
             <div

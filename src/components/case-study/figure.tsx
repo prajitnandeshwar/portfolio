@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
 import { ImageLightbox } from "@/components/site/image-lightbox";
+import { Reveal } from "./reveal";
 
 type FigureProps = {
   src?: string;
@@ -39,7 +40,8 @@ export function Figure({
   const label = alt ?? caption;
 
   return (
-    <figure className="my-10 md:my-12">
+    <Reveal>
+      <figure className="my-10 md:my-12">
       {src && width && height ? (
         <>
           <button
@@ -84,8 +86,9 @@ export function Figure({
         children
       )}
 
-      <Caption caption={caption} tag={tag} />
-    </figure>
+        <Caption caption={caption} tag={tag} />
+      </figure>
+    </Reveal>
   );
 }
 
