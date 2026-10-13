@@ -184,8 +184,39 @@
   will-change: transform;
 }
 
+
+/* ─────────────────────────────────────────────────────────────── */
+/* Tax Assurance hero: three board layers drifting against each    */
+/* other. Transform only, so nothing reflows and the compositor    */
+/* does all the work. Each layer runs a different duration and     */
+/* starts part way in via a negative delay, so they never line up  */
+/* and the loop has no visible beat.                               */
+/* ─────────────────────────────────────────────────────────────── */
+@keyframes hero-drift-left  { from { transform: translateX(0);    } to { transform: translateX(-6px); } }
+@keyframes hero-drift-right { from { transform: translateX(0);    } to { transform: translateX(6px);  } }
+@keyframes hero-float-up    { from { transform: translateY(0);    } to { transform: translateY(-5px); } }
+
+.hero-layer-saudi,
+.hero-layer-malaysia,
+.hero-layer-france {
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+  will-change: transform;
+}
+
+.hero-layer-saudi    { animation-name: hero-drift-left;  animation-duration: 11s; animation-delay: -4s; }
+.hero-layer-malaysia { animation-name: hero-drift-right; animation-duration: 12s; animation-delay: -7s; }
+.hero-layer-france   { animation-name: hero-float-up;    animation-duration: 9s;  animation-delay: -2s; }
+
 @media (prefers-reduced-motion: reduce) {
   .chaos-card-float {
+    animation: none;
+  }
+  .hero-layer-saudi,
+  .hero-layer-malaysia,
+  .hero-layer-france {
     animation: none;
   }
   /* Disable the Base UI Sheet enter/exit transitions so the mobile
