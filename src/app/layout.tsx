@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 const TITLE = "Prajit Nandeshwar, Lead Product Designer";
 const DESCRIPTION =
-  "Lead Product Designer at Clear, shipping enterprise compliance software end to end. Tax GRC, AI-augmented design, and design systems across 8 products and 4 countries.";
+  "Lead Product Designer building AI products for enterprise compliance, end to end.";
 
 export const metadata: Metadata = {
   // metadataBase sets the origin Next.js prepends to any relative URL

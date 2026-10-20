@@ -184,11 +184,6 @@ const RULINGS = [
     why: "Meaning must never ride on colour alone",
   },
   {
-    conflict: "Uppercase",
-    ruling: "Forbidden",
-    why: "A dashboard is read, not shouted",
-  },
-  {
     conflict: "Tables",
     ruling: "Two variants only, one per board",
     why: "Mixing them makes a board read as two products",
@@ -719,7 +714,7 @@ export default function TaxAssurancePage() {
             />
           </Figure>
 
-          <Figure caption="Six of the fourteen rulings. Each one names the conflict, decides it, and says why.">
+          <Figure caption="Five of the fourteen rulings. Each one names the conflict, decides it, and says why.">
             <Frame>
               <RulingsTable
                 headers={["Conflict", "Ruling", "Why"]}
