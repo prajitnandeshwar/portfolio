@@ -5,15 +5,16 @@ import { RotateCcw } from "lucide-react";
 import { useState } from "react";
 
 // Notice Tracker case study hero. A structured grey skeleton plays first
-// (with a soft shimmer), then the real dashboard assembles in five
-// staggered horizontal bands: each band lifts in with opacity 0 to 1,
-// translate 14px to 0, and blur 6px to 0. The matching skeleton band
-// fades out on the same timing so the assembly reads as the skeleton
-// becoming the screenshot, not a flat crossfade.
+// (with a soft shimmer), then the real dashboard wipes in from top to
+// bottom as one image: it lifts in with opacity 0 to 1, translate 14px
+// to 0, and blur 6px to 0 while a clip edge travels down it. The
+// skeleton fades out on the same timing, so the assembly reads as the
+// skeleton becoming the screenshot, not a flat crossfade.
+//
+// The image is the top of the full dashboard screen, pre-cropped to this
+// frame's 11:6 so one file is loaded once.
 
-const BAND_COUNT = 5;
-const BAND_STAGGER = 0.11; // seconds between bands
-const BAND_DURATION = 0.45; // seconds, each band's own animation
+const REVEAL_DURATION = 0.9; // seconds, the wipe from top to bottom
 const SHIMMER_DELAY = 0.5; // seconds, shimmer plays first
 const SHIMMER_DURATION = 1.1; // seconds for the sweep across the skeleton
 
@@ -21,12 +22,6 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 const SKEL_BAR = "#D1D5DB";
 const SKEL_BLOCK = "#E5E7EB";
-
-function bandClip(i: number, count: number) {
-  const top = (i / count) * 100;
-  const bottom = ((count - i - 1) / count) * 100;
-  return `inset(${top}% 0 ${bottom}% 0)`;
-}
 
 export function HeroDashboardPlaceholder() {
   const reduceMotion = useReducedMotion();
@@ -58,26 +53,22 @@ export function HeroDashboardPlaceholder() {
       style={frameStyle}
       aria-label="Notice Tracker dashboard, skeleton to shipped reveal"
     >
-      {/* Skeleton bands. Each band is a clipped copy of the full
-          structured skeleton; only its horizontal slice is visible.
-          Fades out on the same timing as the matching image band. */}
-      {Array.from({ length: BAND_COUNT }).map((_, i) => (
-        <motion.div
-          key={`skel-${playId}-${i}`}
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 0 }}
-          transition={{
-            duration: BAND_DURATION,
-            delay: SHIMMER_DELAY + i * BAND_STAGGER,
-            ease: EASE,
-          }}
-          className="absolute inset-0"
-          style={{ margin: 0, clipPath: bandClip(i, BAND_COUNT) }}
-          aria-hidden
-        >
-          <Skeleton />
-        </motion.div>
-      ))}
+      {/* Skeleton. Fades out across the same window as the image wipe. */}
+      <motion.div
+        key={`skel-${playId}`}
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 0 }}
+        transition={{
+          duration: REVEAL_DURATION,
+          delay: SHIMMER_DELAY,
+          ease: EASE,
+        }}
+        className="absolute inset-0"
+        style={{ margin: 0 }}
+        aria-hidden
+      >
+        <Skeleton />
+      </motion.div>
 
       {/* Shimmer sweeps across the skeleton during the initial delay,
           then fades out as the bands begin assembling. */}
@@ -97,25 +88,33 @@ export function HeroDashboardPlaceholder() {
         <Shimmer />
       </motion.div>
 
-      {/* Real dashboard rendered as five staggered bands. Each band is
-          the full image clipped to its horizontal slice, animating in
-          with a lift + sharpen so it reads as focusing into place. */}
-      {Array.from({ length: BAND_COUNT }).map((_, i) => (
-        <motion.div
-          key={`band-${playId}-${i}`}
-          initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{
-            duration: BAND_DURATION,
-            delay: SHIMMER_DELAY + i * BAND_STAGGER,
-            ease: EASE,
-          }}
-          className="absolute inset-0"
-          style={{ margin: 0, clipPath: bandClip(i, BAND_COUNT) }}
-        >
-          <DashboardImage />
-        </motion.div>
-      ))}
+      {/* Real dashboard, one image. The clip edge travels from top to
+          bottom while the image lifts and sharpens, so it reads as
+          focusing into place row by row. */}
+      <motion.div
+        key={`image-${playId}`}
+        initial={{
+          opacity: 0,
+          y: 14,
+          filter: "blur(6px)",
+          clipPath: "inset(0% 0% 100% 0%)",
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          clipPath: "inset(0% 0% 0% 0%)",
+        }}
+        transition={{
+          duration: REVEAL_DURATION,
+          delay: SHIMMER_DELAY,
+          ease: EASE,
+        }}
+        className="absolute inset-0"
+        style={{ margin: 0 }}
+      >
+        <DashboardImage />
+      </motion.div>
 
       {/* Replay control. Subtle chip in the bottom-right corner. */}
       <button
@@ -140,7 +139,7 @@ function DashboardImage() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/work/notice-tracker/dashboard.png"
+      src="/work/notice-tracker/dashboard-hero.png"
       alt="Notice Tracker dashboard"
       draggable={false}
       style={{
