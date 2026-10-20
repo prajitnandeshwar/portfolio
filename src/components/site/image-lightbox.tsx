@@ -35,6 +35,9 @@ type ImageLightboxProps = {
   // Optional: short label used for the (visually hidden) dialog title.
   // Required for accessibility; falls back to "Image preview".
   title?: string;
+  // A click on the dim, outside the image card and its caption, closes
+  // it. Clicks on the image itself are left alone so it can be scrolled.
+  closeOnOutsideClick?: boolean;
 };
 
 export function ImageLightbox({
@@ -45,6 +48,7 @@ export function ImageLightbox({
   caption,
   initialIndex = 0,
   title = "Image preview",
+  closeOnOutsideClick = false,
 }: ImageLightboxProps) {
   const [index, setIndex] = useState(initialIndex);
 
@@ -110,6 +114,14 @@ export function ImageLightbox({
         // base one as separate keys, so plain max-w-none does not beat it.
         // Without this the lightbox renders 384px wide above 640px, as a
         // panel pinned to the left edge rather than the full viewport.
+        onClick={
+          closeOnOutsideClick
+            ? (e) => {
+                const target = e.target as HTMLElement;
+                if (!target.closest("[data-lightbox-keep]")) onOpenChange(false);
+              }
+            : undefined
+        }
         className="fixed inset-0 top-0 left-0 z-[60] flex items-center justify-center translate-x-0 translate-y-0 max-w-none sm:max-w-none w-screen h-[100dvh] gap-0 rounded-none p-4 bg-black/75 ring-0"
       >
         <DialogTitle className="sr-only">{title}</DialogTitle>
@@ -139,6 +151,7 @@ export function ImageLightbox({
             onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
+            data-lightbox-keep
             className="relative w-full rounded-lg bg-white overflow-y-auto"
             style={{
               maxHeight: multiFrame || caption ? "72vh" : "82vh",
@@ -178,6 +191,7 @@ export function ImageLightbox({
               caption. Hidden when there is only one frame. */}
           {multiFrame && (
             <div
+              data-lightbox-keep
               className="flex items-center gap-4 text-white/80 px-3 py-1.5 rounded-full"
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.45)",

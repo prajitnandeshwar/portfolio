@@ -11,6 +11,7 @@ import {
 import { CaseStudyTriad } from "@/components/case-study/case-study-triad";
 import { CaseStudySubLabel } from "@/components/case-study/case-study-sub-label";
 import { ScreenshotPlaceholder } from "@/components/case-study/screenshot-placeholder";
+import { ScrollingScreenshot } from "@/components/case-study/scrolling-screenshot";
 import { HeroDashboardPlaceholder } from "@/components/case-study/hero-dashboard-placeholder";
 import { CaseIdAnimation } from "@/components/case-study/case-id-animation";
 import { Call } from "@/components/case-study/call";
@@ -304,10 +305,12 @@ export default function NoticeTrackerPage() {
           {/* Sub-section 1: Dashboard */}
           <div className="mt-8">
             <CaseStudySubLabel text="Dashboard · CFO view" className="mb-3" />
-            <ScreenshotPlaceholder
-              src="/work/notice-tracker/dashboard.png"
-              alt="Notice Tracker dashboard with PAN-level summary, demand buckets, and GST cases overview"
-              caption="Dashboard with PAN-level summary, demand buckets, workflow status"
+            <ScrollingScreenshot
+              src="/work/notice-tracker/dashboard-full.png"
+              alt="The Notice Tracker dashboard, showing case buckets, workflow status and a PAN level summary."
+              caption="The Notice Tracker dashboard, showing case buckets, workflow status and a PAN level summary."
+              width={2732}
+              height={2396}
             />
             <div className="mt-6">
               <Prose>
