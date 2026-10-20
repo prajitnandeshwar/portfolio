@@ -164,32 +164,6 @@
 }
 
 /* ─────────────────────────────────────────────────────────────── */
-/* Notice Tracker full screen pan: 2s at the top, 12s down, 2s at  */
-/* the bottom, 12s back up. 28s in all, eased within each leg.     */
-/* --pan-to is set per image by ScrollingScreenshot. Hover or      */
-/* focus inside the frame pauses it; reduced motion removes it.    */
-/* ─────────────────────────────────────────────────────────────── */
-@keyframes screen-pan {
-  0%, 7.143%    { transform: translateY(0); }
-  50%, 57.143%  { transform: translateY(var(--pan-to)); }
-  100%          { transform: translateY(0); }
-}
-
-.screen-pan {
-  animation: screen-pan 28s ease-in-out infinite;
-  will-change: transform;
-}
-
-.screen-pan-frame:hover .screen-pan,
-.screen-pan-frame:focus-within .screen-pan {
-  animation-play-state: paused;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .screen-pan { animation: none; }
-}
-
-/* ─────────────────────────────────────────────────────────────── */
 /* Notice card float: subtle continuous motion applied to the outer */
 /* wrapper of each card in ChaosNoticesPile, so it composes with    */
 /* (rather than overwriting) the Framer Motion reveal transform on  */

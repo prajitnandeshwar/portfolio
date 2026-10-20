@@ -306,11 +306,16 @@ export default function NoticeTrackerPage() {
           <div className="mt-8">
             <CaseStudySubLabel text="Dashboard · CFO view" className="mb-3" />
             <ScrollingScreenshot
-              src="/work/notice-tracker/dashboard-full.png"
+              topbar="/work/notice-tracker/dashboard-topbar.png"
+              rail="/work/notice-tracker/dashboard-rail.png"
+              content={{
+                src: "/work/notice-tracker/dashboard-content.png",
+                width: 2636,
+                height: 2316,
+              }}
+              full="/work/notice-tracker/dashboard-full.png"
               alt="The Notice Tracker dashboard, showing case buckets, workflow status and a PAN level summary."
               caption="The Notice Tracker dashboard, showing case buckets, workflow status and a PAN level summary."
-              width={2732}
-              height={2396}
             />
             <div className="mt-6">
               <Prose>

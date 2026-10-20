@@ -2,97 +2,124 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { useReducedMotion } from "framer-motion";
 import { ImageLightbox } from "@/components/site/image-lightbox";
 
-// A full, tall screen shown in a 16:10 frame that pans through it: 2s at
-// the top, 12s down, 2s at the bottom, 12s back up, eased, looping. The
-// pan is a transform on the image (keyframes in globals.css), so it runs
-// on the compositor with no repaint. Hover or keyboard focus pauses it.
+// The full dashboard rebuilt as the app it came from: the top bar and the
+// left icon rail stay put, and only the page content scrolls, on demand,
+// under them. Nothing moves until the reader scrolls.
 //
-// The pan distance is the part of the image that does not fit, as a
-// share of the image's own height, so it holds at any frame width.
+// The screenshot is cut into three slices at the app's own borders (see
+// /public/work/notice-tracker/dashboard-*.png). Every size here is a share
+// of the original 2732 x 1540 window, so the slices line up at any width:
 //
-// Under reduced motion there is no pan: the frame opens on the top of the
-// screen and scrolls natively, and is focusable so arrow keys scroll it.
-// Either way a click opens the whole screen in the lightbox.
+//   top bar   2732 x 80, across the top
+//   rail      96 x 1460, down the left, below the top bar
+//   content   2636 x 2316, the scrolling area
+//
+// A click on the content, or the Full screen chip, opens the whole screen
+// in the lightbox. The content area is focusable so arrow keys scroll it.
+const APP_W = 2732;
+const APP_H = 1540;
+const TOP = 80;
+const RAIL = 96;
+
 export function ScrollingScreenshot({
-  src,
+  topbar,
+  rail,
+  content,
+  full,
   alt,
   caption,
-  width,
-  height,
 }: {
-  src: string;
+  topbar: string;
+  rail: string;
+  content: { src: string; width: number; height: number };
+  full: string;
   alt: string;
   caption: string;
-  width: number;
-  height: number;
 }) {
-  const reduceMotion = useReducedMotion();
   const [open, setOpen] = useState(false);
-
-  // Frame height over image height, at the same width: (10 / 16) / (h / w).
-  const travel = (1 - (10 / 16) * (width / height)) * 100;
+  const label = alt.replace(/\.$/, "");
 
   return (
     <>
       <div
-        className="screen-pan-frame relative w-full overflow-hidden rounded-xl border focus-within:ring-2 focus-within:ring-ring/50"
+        className="relative w-full overflow-hidden rounded-xl border bg-white"
         style={{
-          aspectRatio: "16 / 10",
-          backgroundColor: "var(--surface)",
+          aspectRatio: `${APP_W} / ${APP_H}`,
           borderColor: "var(--border)",
           boxShadow: "var(--frame-shadow)",
           margin: 0,
         }}
       >
-        <div
-          className={`absolute inset-0 ${reduceMotion ? "overflow-y-auto" : "overflow-hidden"}`}
-          tabIndex={reduceMotion ? 0 : undefined}
-          role={reduceMotion ? "region" : undefined}
-          aria-label={reduceMotion ? `${alt.replace(/\.$/, "")}, scrollable` : undefined}
+        <Image
+          src={topbar}
+          alt=""
+          width={APP_W}
+          height={TOP}
+          sizes="(max-width: 768px) 100vw, 1080px"
+          className="absolute top-0 left-0 z-10 block w-full h-auto"
           style={{ margin: 0 }}
+        />
+        <Image
+          src={rail}
+          alt=""
+          width={RAIL}
+          height={APP_H - TOP}
+          sizes="40px"
+          className="absolute left-0 z-10 block h-auto"
+          style={{
+            top: `${(TOP / APP_H) * 100}%`,
+            width: `${(RAIL / APP_W) * 100}%`,
+            margin: 0,
+          }}
+        />
+
+        <div
+          tabIndex={0}
+          role="region"
+          aria-label={`${label}, scrollable`}
+          onClick={() => setOpen(true)}
+          className="absolute right-0 bottom-0 overflow-y-auto cursor-zoom-in outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/50"
+          style={{
+            top: `${(TOP / APP_H) * 100}%`,
+            left: `${(RAIL / APP_W) * 100}%`,
+            scrollbarWidth: "thin",
+            margin: 0,
+          }}
         >
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            aria-label={`Open ${alt.replace(/\.$/, "")}, full screen`}
-            className="block w-full cursor-zoom-in text-left outline-none"
+          <Image
+            src={content.src}
+            alt={alt}
+            width={content.width}
+            height={content.height}
+            sizes="(max-width: 768px) 100vw, 1080px"
+            className="block w-full h-auto"
             style={{ margin: 0 }}
-          >
-            <Image
-              src={src}
-              alt={alt}
-              width={width}
-              height={height}
-              sizes="(max-width: 768px) 100vw, 1080px"
-              className={`block w-full h-auto ${reduceMotion ? "" : "screen-pan"}`}
-              style={
-                { "--pan-to": `-${travel.toFixed(3)}%` } as React.CSSProperties
-              }
-            />
-          </button>
+          />
         </div>
 
-        <span
-          aria-hidden
-          className="pointer-events-none absolute top-3 right-3 rounded-full px-2.5 py-1 text-[12px] leading-none text-[#6B6B68]"
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label={`Open ${label}, full screen`}
+          className="absolute right-4 bottom-3 z-20 rounded-full px-2.5 py-1 text-[12px] leading-none text-[#6B6B68] hover:text-[#D97706] transition-colors duration-200 ease-out"
           style={{
             margin: 0,
             backgroundColor: "rgba(255, 255, 255, 0.85)",
             backdropFilter: "blur(8px)",
             WebkitBackdropFilter: "blur(8px)",
+            boxShadow: "0 1px 2px rgba(0, 0, 0, 0.06)",
           }}
         >
           Full screen ↕
-        </span>
+        </button>
       </div>
 
       <ImageLightbox
         open={open}
         onOpenChange={setOpen}
-        frames={[src]}
+        frames={[full]}
         caption={caption}
         title={alt}
         closeOnOutsideClick
