@@ -73,9 +73,9 @@ export function Hero() {
             margin: "0 auto",
           }}
         >
-          Lead Product Designer building{" "}
+          Lead Product Designer{" "}
           <br className="hidden lg:inline" />
-          AI products for enterprise{" "}
+          building AI products for enterprise{" "}
           <br className="hidden lg:inline" />
           compliance, end to end
           <span style={{ color: AMBER }}>.</span>
