@@ -5,6 +5,12 @@ import { ArrowUpRight } from "lucide-react";
 
 const AMBER = "#D97706";
 
+// Inline links in the subline: dark and medium weight so they read as
+// links, with a faint underline that fades in on hover. whitespace-nowrap
+// keeps each link name on one line.
+const INLINE_LINK =
+  "whitespace-nowrap font-medium text-foreground underline decoration-transparent underline-offset-4 transition-[text-decoration-color] duration-200 hover:decoration-foreground/30";
+
 const container = {
   hidden: {},
   show: {
@@ -56,15 +62,22 @@ export function Hero() {
           Available for select roles, 2026
         </motion.div>
 
+        {/* At lg (1024px) and up the headline is forced onto three set
+            lines; the <br>s are hidden below that so it wraps naturally.
+            lg:max-w-none stops the text box from wrapping a set line early. */}
         <motion.h1
           variants={item}
-          className="text-balance font-medium leading-[1.08] tracking-[-0.02em] text-foreground max-w-3xl"
+          className="text-balance font-medium leading-[1.08] tracking-[-0.02em] text-foreground max-w-3xl lg:max-w-none"
           style={{
             fontSize: "clamp(1.75rem, 4.2vw, 3.25rem)",
             margin: "0 auto",
           }}
         >
-          Lead Product Designer shipping enterprise compliance software, end to end
+          Lead Product Designer building{" "}
+          <br className="hidden lg:inline" />
+          AI products for enterprise{" "}
+          <br className="hidden lg:inline" />
+          compliance, end to end
           <span style={{ color: AMBER }}>.</span>
         </motion.h1>
 
@@ -73,7 +86,16 @@ export function Hero() {
           className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground"
           style={{ margin: "2rem auto 0" }}
         >
-          I lead design strategy for Clear&rsquo;s India and Global B2B portfolio: 8 products, 1,500+ enterprise customers, 4 countries. I design AI-augmented compliance products and prototype enterprise software in code.
+          At{" "}
+          <a
+            href="https://www.clear.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={INLINE_LINK}
+          >
+            Clear (ClearTax)
+          </a>
+          , I lead design strategy for the India and Global B2B portfolio: 8 products, 1,500+ enterprise customers, 4 countries. I prototype in code and ship with AI agents.
         </motion.p>
 
         <motion.div
