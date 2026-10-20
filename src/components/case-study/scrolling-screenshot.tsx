@@ -16,8 +16,8 @@ import { ImageLightbox } from "@/components/site/image-lightbox";
 //   rail      96 x 1460, down the left, below the top bar
 //   content   2636 x 2316, the scrolling area
 //
-// A click on the content, or the Full screen chip, opens the whole screen
-// in the lightbox. The content area is focusable so arrow keys scroll it.
+// A click on the content opens the whole screen in the lightbox. The
+// content area is focusable: arrow keys scroll it and Enter opens it.
 const APP_W = 2732;
 const APP_H = 1540;
 const TOP = 80;
@@ -78,8 +78,11 @@ export function ScrollingScreenshot({
         <div
           tabIndex={0}
           role="region"
-          aria-label={`${label}, scrollable`}
+          aria-label={`${label}, scrollable. Press Enter to open full screen`}
           onClick={() => setOpen(true)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") setOpen(true);
+          }}
           className="absolute right-0 bottom-0 overflow-y-auto cursor-zoom-in outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/50"
           style={{
             top: `${(TOP / APP_H) * 100}%`,
@@ -98,22 +101,6 @@ export function ScrollingScreenshot({
             style={{ margin: 0 }}
           />
         </div>
-
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label={`Open ${label}, full screen`}
-          className="absolute right-4 bottom-3 z-20 rounded-full px-2.5 py-1 text-[12px] leading-none text-[#6B6B68] hover:text-[#D97706] transition-colors duration-200 ease-out"
-          style={{
-            margin: 0,
-            backgroundColor: "rgba(255, 255, 255, 0.85)",
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-            boxShadow: "0 1px 2px rgba(0, 0, 0, 0.06)",
-          }}
-        >
-          Full screen ↕
-        </button>
       </div>
 
       <ImageLightbox
