@@ -22,9 +22,21 @@ type Tile = {
   // (eg device-shadow exports). Lightbox is unaffected.
   imageScale?: number;
   lightboxCaption: string;
+  // Descriptive alt text for the tile image. Falls back to the name.
+  alt?: string;
 };
 
 const tiles: Tile[] = [
+  {
+    id: "rewards-dashboard",
+    name: "Clear Compliance Cloud rewards",
+    year: "2025",
+    color: "#F0F2F5",
+    image: "/exhibition/rewards-dashboard.png",
+    alt: "A rewards dashboard with points, a level badge, a leaderboard and tasks that earn points.",
+    lightboxCaption:
+      "Rewards for compliance work. Points, levels and a leaderboard for the tasks that keep notices moving.",
+  },
   {
     id: "clear-assurance",
     name: "Clear Assurance",
@@ -33,15 +45,6 @@ const tiles: Tile[] = [
     image: "/work/clear-assurance.png",
     lightboxCaption:
       "Proactive indirect tax intelligence dashboard. Multiple iterations, ultimately did not ship.",
-  },
-  {
-    id: "ims-vs-pr",
-    name: "IMS vs PR Reconciliation",
-    year: "2024",
-    color: "#F0F2F5",
-    image: "/exhibition/ims-vs-pr-reconciliation.png",
-    lightboxCaption:
-      "GST reconciliation. Matching invoices to vendor returns across millions of rows, with action recommendations.",
   },
   {
     id: "poc-compliance",
@@ -237,7 +240,7 @@ function TileCard({
         {tile.image && (
           <Image
             src={tile.image}
-            alt={tile.name}
+            alt={tile.alt ?? tile.name}
             fill
             sizes="(max-width: 768px) 100vw, 540px"
             className="object-cover select-none pointer-events-none"
