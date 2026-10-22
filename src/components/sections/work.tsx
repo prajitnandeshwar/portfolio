@@ -25,6 +25,15 @@ type Project = {
 
 const projects: Project[] = [
   {
+    id: "notice-tracker",
+    year: "2025–26",
+    title: "Notice Tracker",
+    description: "AI-powered platform for managing GST notices at scale.",
+    tags: ["B2B", "AI", "0→1", "₹2.3Cr ARR"],
+    href: "/work/notice-tracker",
+    image: "/work/notice-tracker.png",
+  },
+  {
     id: "tax-assurance",
     year: "2026",
     status: "In market",
@@ -34,15 +43,6 @@ const projects: Project[] = [
     tags: ["B2B", "AI", "Built with an agent", "Multi country"],
     href: "/work/tax-assurance",
     image: "/work/tax-assurance/france-executive-summary.png",
-  },
-  {
-    id: "notice-tracker",
-    year: "2025",
-    title: "Notice Tracker",
-    description: "AI-powered platform for managing GST notices at scale.",
-    tags: ["B2B", "AI", "0→1", "₹2.3Cr ARR"],
-    href: "/work/notice-tracker",
-    image: "/work/notice-tracker.png",
   },
   {
     id: "payment-recommendations",

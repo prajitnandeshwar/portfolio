@@ -141,7 +141,7 @@ export default function NoticeTrackerPage() {
           tagline="AI-augmented platform for managing GST notices at scale."
           credits={[
             { label: "Role", value: "Lead Designer & PM" },
-            { label: "Timeline", value: "2025" },
+            { label: "Timeline", value: "2025–26" },
             { label: "Read", value: "9 min" },
             { label: "Team", value: "Founder, Product, Engineering, Sales" },
           ]}
