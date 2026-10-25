@@ -1,15 +1,15 @@
 type Stat = { value: string; suffix?: string; label: string };
 
 // Headline figures strip under the hero. Matches the Notice Tracker stats
-// band exactly (same rules, same type scale, amber suffix); the only
-// difference is that this one carries five figures rather than four.
+// band (same rules, same type scale, amber suffix). Four figures, each
+// centred in its own equal column: two per row on phones.
 export function StatRow({ stats }: { stats: Stat[] }) {
   return (
     <section
       className="px-6 md:px-12 py-10 border-y"
       style={{ borderColor: "#E5E2DC" }}
     >
-      <div className="mx-auto max-w-[1080px] grid grid-cols-2 min-[768px]:grid-cols-3 min-[1000px]:grid-cols-5 gap-y-7 gap-x-6">
+      <div className="mx-auto max-w-[1080px] grid grid-cols-2 min-[768px]:grid-cols-4 gap-y-7 gap-x-6 text-center">
         {stats.map((stat) => (
           <div key={stat.label}>
             <div

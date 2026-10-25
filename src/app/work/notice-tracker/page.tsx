@@ -23,6 +23,7 @@ import { ChaosNoticesPile } from "@/components/case-study/chaos-notices-pile";
 import { Takeaways } from "@/components/case-study/takeaways";
 import { OutcomesSection } from "@/components/case-study/outcomes-section";
 import { WhatCameNext } from "@/components/case-study/what-came-next";
+import { NextCaseStudy } from "@/components/case-study/next-case-study";
 
 export const metadata: Metadata = {
   // The root layout appends " · Prajit Nandeshwar" via its title
@@ -548,8 +549,13 @@ export default function NoticeTrackerPage() {
         {/* 11 · What came next (no uppercase label, title carries it) */}
         <WhatCameNext
           title="From tracking to litigation."
-          ctaLabel="See more work"
-          ctaHref="/#work"
+          next={
+            <NextCaseStudy
+              href="/work/tax-assurance"
+              title="Tax Assurance"
+              image="/work/tax-assurance/france-executive-summary.png"
+            />
+          }
           body={
             <>
               <p>

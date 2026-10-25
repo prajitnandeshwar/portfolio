@@ -15,12 +15,16 @@ export function VideoFigure({
   alt,
   width,
   height,
+  eager = false,
 }: {
   src: string;
   poster: string;
   alt: string;
   width: number;
   height: number;
+  // Above the fold: fetch the whole file up front instead of only its
+  // metadata, so the first loop starts without a stall.
+  eager?: boolean;
 }) {
   const reduceMotion = useReducedMotion();
 
@@ -48,7 +52,7 @@ export function VideoFigure({
       muted
       loop
       playsInline
-      preload="metadata"
+      preload={eager ? "auto" : "metadata"}
       aria-label={alt}
       className="block w-full h-auto"
       style={{ margin: 0 }}

@@ -1,19 +1,18 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
+import { BackToWork } from "./back-to-work";
 
 // Closing section. By spec: NO uppercase label. The title carries it alone.
 type WhatCameNextProps = {
   title: string;
   body: ReactNode;
-  ctaLabel: string;
-  ctaHref: string;
+  // Optional card for the next case study, shown above the link.
+  next?: ReactNode;
 };
 
 export function WhatCameNext({
   title,
   body,
-  ctaLabel,
-  ctaHref,
+  next,
 }: WhatCameNextProps) {
   return (
     <section
@@ -32,31 +31,11 @@ export function WhatCameNext({
           {body}
         </div>
 
-        <Link
-          href={ctaHref}
-          className="group inline-flex items-center gap-2 mt-8 text-[15px] font-medium text-[#1F1F1E] transition-colors duration-200 ease-out"
-        >
-          <span className="relative">
-            {ctaLabel}
-            <span
-              aria-hidden
-              className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-100 transition-colors duration-200"
-              style={{ backgroundColor: "#E5E2DC" }}
-            />
-            <span
-              aria-hidden
-              className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 transition-transform duration-200 group-hover:scale-x-100"
-              style={{ backgroundColor: "#D97706" }}
-            />
-          </span>
-          <span
-            aria-hidden
-            className="transition-transform duration-200 ease-out group-hover:translate-x-1 group-hover:text-[#D97706]"
-          >
-            →
-          </span>
-        </Link>
+        {next && <div style={{ marginTop: "2.5rem" }}>{next}</div>}
+
+        <BackToWork />
       </div>
     </section>
   );
 }
+
