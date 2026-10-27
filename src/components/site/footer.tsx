@@ -9,7 +9,7 @@ export function Footer() {
     <footer className="px-6 md:px-10 border-t border-border">
       <div className="mx-auto max-w-[1200px] py-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-[13px] text-muted-foreground">
         <span>
-          © 2026 Prajit Nandeshwar · Built with Next.js &amp; shadcn/ui
+          © 2026 Prajit Nandeshwar · Designed and built by me, with Claude Code
         </span>
         <div className="flex items-center gap-2">
           {SOCIALS.map(({ label, href, Icon }) => (

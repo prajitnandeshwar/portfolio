@@ -31,34 +31,34 @@ export const metadata: Metadata = {
   // here is what made the tab read the name twice.
   title: "Notice Tracker",
   description:
-    "AI-augmented platform for managing GST notices at scale. 100+ enterprises, 85% adoption, ₹2.3Cr ARR.",
+    "AI-powered platform for managing GST notices at scale. 100+ enterprises, 85% adoption, ₹2.3Cr ARR.",
   // Page specific cards. The image comes from opengraph-image.png in this
   // folder, which takes precedence over the site wide one.
   openGraph: {
     title: "Notice Tracker · Prajit Nandeshwar",
     description:
-      "AI-augmented platform for managing GST notices at scale. 100+ enterprises, 85% adoption, ₹2.3Cr ARR.",
+      "AI-powered platform for managing GST notices at scale. 100+ enterprises, 85% adoption, ₹2.3Cr ARR.",
     url: "https://prajitnandeshwar.in/work/notice-tracker",
   },
   twitter: {
     card: "summary_large_image",
     title: "Notice Tracker · Prajit Nandeshwar",
     description:
-      "AI-augmented platform for managing GST notices at scale. 100+ enterprises, 85% adoption, ₹2.3Cr ARR.",
+      "AI-powered platform for managing GST notices at scale. 100+ enterprises, 85% adoption, ₹2.3Cr ARR.",
   },
 };
 
 const STATS = [
   { value: "100", suffix: "+", label: "Enterprises" },
   { value: "85", suffix: "%", label: "User adoption" },
-  { value: "95", suffix: "%", label: "Tracking success" },
+  { value: "90", suffix: "%", label: "Tracking success" },
   { value: "₹2.3", suffix: "Cr", label: "Annual revenue" },
 ];
 
 const OUTCOMES = [
   { value: "100", suffix: "+", label: "Enterprises onboarded" },
   { value: "85", suffix: "%", label: "User adoption" },
-  { value: "95", suffix: "%", label: "Notice tracking success" },
+  { value: "90", suffix: "%", label: "Notice tracking success" },
   { value: "₹2.3", suffix: "Cr", label: "Annual recurring revenue" },
 ];
 
@@ -139,7 +139,7 @@ export default function NoticeTrackerPage() {
           backLabel="Back to work"
           title="Notice Tracker"
           accentChar="."
-          tagline="AI-augmented platform for managing GST notices at scale."
+          tagline="AI-powered platform for managing GST notices at scale."
           credits={[
             { label: "Role", value: "Lead Designer & PM" },
             { label: "Timeline", value: "2025–26" },
@@ -570,7 +570,7 @@ export default function NoticeTrackerPage() {
                 are longer. The same Case ID still anchors everything.
               </p>
               <p>
-                That&rsquo;s what&rsquo;s coming next. We are extending the
+                That&rsquo;s what&rsquo;s coming next. Clear is extending the
                 platform into the full litigation lifecycle as a dedicated
                 product, CCC Litigate. Same spine, deeper domain, longer time
                 horizons.

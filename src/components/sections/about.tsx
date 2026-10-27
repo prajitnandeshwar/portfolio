@@ -64,13 +64,13 @@ export function About() {
 
           <div className="md:col-span-7 md:col-start-6 space-y-5 text-base leading-[1.7] text-foreground/85 max-w-prose">
             <p>
-              I have spent the last 5 years at Clear shipping enterprise compliance software for India and abroad. My work spans Tax GRC, AI-augmented design, and design systems across 8 products serving 1,500+ enterprise customers across India, UAE, Saudi Arabia, Malaysia, and France. I was promoted twice in under four years, from Product Designer to Lead.
+              I have spent the last 5 years at Clear shipping enterprise compliance software for India and abroad. My work spans Tax GRC, AI products built with agents, and design systems across 8 products serving 1,500+ enterprise customers across India, Saudi Arabia, Malaysia, and France. I was promoted twice in under four years, from Product Designer to Lead.
             </p>
             <p className="text-muted-foreground">
               I gravitate toward complex domains where regulations change quarterly, the data is messy, and users are experts who do not tolerate bad software. That is where design has the most leverage.
             </p>
             <p className="text-muted-foreground">
-              I prototype in code (currently using Claude Code daily), lead a small B2B design team, and write occasionally about working in regulated B2B software.
+              I prototype in code (currently using Claude Code daily) and lead a small B2B design team.
             </p>
             <p style={{ margin: 0 }}>
               <a

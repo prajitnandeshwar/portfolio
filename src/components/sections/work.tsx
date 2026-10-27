@@ -1,8 +1,9 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
+import type { CSSProperties } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { NowBuilding } from "./now-building";
 
 type NdaTag = "NDA" | "Pre-launch";
 
@@ -21,6 +22,11 @@ type Project = {
   // a quiet "In progress" label in place of the arrow. The card keeps
   // every hover style; only the click target and the arrow go away.
   inProgress?: boolean;
+  // Card styling for the case studies: a top to bottom panel gradient
+  // and an accent for the headline number and the hovered arrow.
+  theme?: { from: string; via: string; to: string; accent: string };
+  // The headline number in the card footer, e.g. "6" then "customers".
+  stat?: { value: string; label: string };
 };
 
 const projects: Project[] = [
@@ -31,29 +37,37 @@ const projects: Project[] = [
     title: "Tax Assurance",
     description:
       "Designing VAT and SST returns a finance team can trust enough to sign.",
-    tags: ["B2B", "AI", "Built with an agent", "Multi country"],
+    tags: ["B2B", "AI", "Built with an agent"],
     href: "/work/tax-assurance",
     image: "/work/tax-assurance/france-executive-summary.png",
+    theme: { from: "#FBF3EC", via: "#F6F3EF", to: "#F4F3F1", accent: "#C8783A" },
+    stat: { value: "6", label: "customers" },
   },
   {
     id: "notice-tracker",
     year: "2025–26",
     title: "Notice Tracker",
     description: "AI-powered platform for managing GST notices at scale.",
-    tags: ["B2B", "AI", "0→1", "₹2.3Cr ARR"],
+    tags: ["B2B", "AI", "0 to 1"],
     href: "/work/notice-tracker",
     image: "/work/notice-tracker.png",
+    theme: { from: "#FAF1EF", via: "#F6F2F1", to: "#F4F3F2", accent: "#D0634F" },
+    stat: { value: "₹2.3 Cr", label: "ARR" },
   },
-  {
-    id: "payment-recommendations",
-    year: "2025",
-    title: "Payment Recommendations",
-    description:
-      "Max ITC payment recommendations. Block, release, and audit vendor invoices across thousands of vouchers.",
-    tags: ["B2B", "Max ITC", "Vendor invoices"],
-    image: "/work/payment-recommendations/closed.png",
-    inProgress: true,
-  },
+  // Payment Recommendations and Mint Design System held the next two
+  // slots. Both were in progress with no case study behind them, so the
+  // section now shows the two case studies only. Their images are still
+  // in public/work. Uncomment to bring them back.
+  // {
+  //   id: "payment-recommendations",
+  //   year: "2025",
+  //   title: "Payment Recommendations",
+  //   description:
+  //     "Max ITC payment recommendations. Block, release, and audit vendor invoices across thousands of vouchers.",
+  //   tags: ["B2B", "Max ITC", "Vendor invoices"],
+  //   image: "/work/payment-recommendations/closed.png",
+  //   inProgress: true,
+  // },
   // Global Recon held this slot. Tax Assurance covers the same ground
   // (multi country indirect tax reconciliation) with a real case study
   // behind it, so it took the slot. Put this back if you want both.
@@ -69,34 +83,18 @@ const projects: Project[] = [
   //   image: "/work/global-recon.png",
   //   inProgress: true,
   // },
-  {
-    id: "mint-design-system",
-    year: "2024",
-    title: "Mint Design System",
-    description: "Design system powering 8 products across Clear's portfolio.",
-    tags: ["Design system", "ShadCN", "Adoption"],
-    image: "/work/mint-design-system.png",
-    inProgress: true,
-  },
+  // {
+  //   id: "mint-design-system",
+  //   year: "2024",
+  //   title: "Mint Design System",
+  //   description: "Design system powering 8 products across Clear's portfolio.",
+  //   tags: ["Design system", "ShadCN", "Adoption"],
+  //   image: "/work/mint-design-system.png",
+  //   inProgress: true,
+  // },
 ];
 
 export function Work() {
-  const [activeIdx, setActiveIdx] = useState(0);
-
-  // ?demo=work-<index> forces hover on that row for screenshot capture.
-  const [demoIdx, setDemoIdx] = useState<number | null>(null);
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const demo = params.get("demo");
-    if (demo?.startsWith("work-")) {
-      const n = parseInt(demo.slice(5), 10);
-      if (!Number.isNaN(n) && n >= 0 && n < projects.length) {
-        setDemoIdx(n);
-        setActiveIdx(n);
-      }
-    }
-  }, []);
-
   return (
     <section
       id="work"
@@ -118,157 +116,100 @@ export function Work() {
           </h2>
         </motion.div>
 
-        {/* Desktop: split view (list left, vertically centred preview
-            right). 5fr / 7fr gives the preview ~58% of the row width so
-            details in the screenshots stay legible. md:items-center keeps
-            the preview anchored to the vertical centre of the project
-            list so the image stays in one stable position as the visitor
-            scrolls and hovers different rows. Sticky scroll was tried
-            but read as the preview "moving" during scroll, which is the
-            opposite of what visitors expect. */}
-        <div className="hidden md:grid md:grid-cols-[5fr_7fr] md:gap-10 md:items-center">
-          <ul
-            className="border-t border-border"
-            onMouseLeave={() => setActiveIdx((i) => i)}
-          >
-            {projects.map((project, i) => (
-              <DesktopRow
-                key={project.id}
-                project={project}
-                index={i}
-                active={activeIdx === i}
-                forceHover={demoIdx === i}
-                onHover={() => setActiveIdx(i)}
-              />
-            ))}
-          </ul>
-
-          <div>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={projects[activeIdx].id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
-              >
-                <Preview project={projects[activeIdx]} />
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Mobile: stacked rows. Whole card (image + text) is a single
-            anchor; tapping anywhere navigates to the case study or, if
-            none exists, to the contact section. This matches what most
-            visitors instinctively expect when a project tile is tapped.
-
-            In-progress items render the same content inside a <div>
-            instead of an <a>, so the row is visible but not navigable.
-            The hover classes are kept identical, only the click target
-            goes away (cursor-default removes the pointer affordance). */}
-        <ul className="md:hidden space-y-10">
-          {projects.map((project) =>
-            project.inProgress ? (
-              <li key={project.id}>
-                <div className="block group cursor-default">
-                  <Preview project={project} compact />
-                  <MobileRow project={project} />
-                </div>
-              </li>
-            ) : (
-              <li key={project.id}>
-                <a
-                  href={project.href ?? "#contact"}
-                  className="block group"
-                >
-                  <Preview project={project} compact />
-                  <MobileRow project={project} />
-                </a>
-              </li>
-            ),
-          )}
+        {/* Two case studies side by side from 768px, stacked below it.
+            Each card is one panel and one link: the image, then the year,
+            title, line, and the headline number with tags. */}
+        <ul className="grid grid-cols-1 gap-7 md:grid-cols-2">
+          {projects.map((project, i) => (
+            <ProjectCard key={project.id} project={project} index={i} />
+          ))}
         </ul>
 
-        <p className="mt-6 max-w-xl text-[12px] text-muted-foreground">
-          Detailed walkthroughs available on request. Some products are pre-launch and cannot be shown publicly.
-        </p>
+        <NowBuilding />
       </div>
     </section>
   );
 }
 
-function YearLine({ project }: { project: Project }) {
-  // In-design projects: "2025 · In design" in tag-line styling.
-  // Shipped projects: bare year in mono-numeric metadata styling.
-  // Both turn amber on row hover.
-  if (project.status) {
-    return (
-      <p className="text-[12px] text-muted-foreground/65 transition-colors duration-200 ease-out group-hover:text-[#D97706] group-data-[force-hover]:text-[#D97706]">
-        {project.year} · {project.status}
-      </p>
-    );
-  }
-  return (
-    <span className="text-[12.5px] font-mono tabular-nums text-muted-foreground transition-colors duration-200 ease-out group-hover:text-[#D97706] group-data-[force-hover]:text-[#D97706]">
-      {project.year}
-    </span>
-  );
-}
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const theme = project.theme;
 
-function DesktopRow({
-  project,
-  index,
-  active,
-  forceHover,
-  onHover,
-}: {
-  project: Project;
-  index: number;
-  active: boolean;
-  forceHover: boolean;
-  onHover: () => void;
-}) {
-  // The card body is identical for both states; only the wrapper
-  // element and the top-right corner (arrow vs "In progress" label)
-  // change. Keeping the inner JSX in a single shared block keeps
-  // typography, spacing, and the rest of the hover behavior identical.
-  const wrapperClassName = `group block px-3 -mx-3 py-3 rounded-md transition-colors duration-200 ease-out data-[force-hover]:bg-surface ${
-    active ? "bg-surface" : "hover:bg-surface"
-  }${project.inProgress ? " cursor-default" : ""}`;
+  // The accent rides on a CSS variable, so the arrow's hover class can
+  // reach it without a class per project.
+  const panelStyle = {
+    "--accent": theme?.accent ?? "#D97706",
+    backgroundImage: theme
+      ? `linear-gradient(to bottom, ${theme.from}, ${theme.via}, ${theme.to})`
+      : undefined,
+    backgroundColor: theme ? undefined : "var(--surface)",
+  } as CSSProperties;
+
+  // On hover the panel lifts 4px with a soft shadow over 250ms. With
+  // reduced motion the lift is dropped.
+  const panelClassName = `group block rounded-[24px] p-4 transition-[translate,box-shadow] duration-[250ms] ease-out hover:shadow-[0_12px_32px_-12px_rgba(31,31,30,0.18)] motion-safe:hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring${
+    project.inProgress ? " cursor-default" : ""
+  }`;
 
   const body = (
     <>
-      <div className="flex items-baseline justify-between gap-4">
-        <YearLine project={project} />
-        {project.inProgress ? (
-          <span className="text-[12px] text-muted-foreground/65">
-            In progress
-          </span>
-        ) : (
-          <ArrowUpRight
-            className="size-4 text-muted-foreground transition-[transform,color] duration-200 ease-out group-hover:text-[#D97706] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-data-[force-hover]:text-[#D97706] group-data-[force-hover]:-translate-y-0.5 group-data-[force-hover]:translate-x-0.5"
-          />
-        )}
-      </div>
-      <h3 className="mt-1.5 text-[17px] font-medium tracking-tight leading-snug">
-        {project.title}
-      </h3>
-      {project.role && (
-        <div className="mt-0.5 text-[13px] text-muted-foreground">
-          {project.role}
+      <Preview project={project} />
+      <div style={{ padding: "20px 10px 8px" }}>
+        <div className="flex items-center gap-3">
+          <p className="flex-1 text-[12.5px] tabular-nums text-muted-foreground">
+            {project.year}
+            {project.status && ` · ${project.status}`}
+          </p>
+          {project.inProgress ? (
+            <span className="text-[12px] text-muted-foreground/65">
+              In progress
+            </span>
+          ) : (
+            // The site's link arrow (as on "See selected work"): it moves
+            // 2px up and right and takes the card's accent on hover. With
+            // reduced motion only the colour changes.
+            <ArrowUpRight
+              aria-hidden
+              className="size-4 shrink-0 text-foreground transition-[translate,color] duration-200 ease-out group-hover:text-[var(--accent)] motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5"
+            />
+          )}
         </div>
-      )}
-      <p
-        className={`text-[13px] leading-snug text-foreground/80 ${
-          project.role ? "mt-1.5" : "mt-2"
-        }`}
-      >
-        {project.description}
-      </p>
-      <p className="mt-2 text-[12px] text-muted-foreground/65">
-        {project.tags.join(" · ")}
-      </p>
+        <h3 className="mt-3 text-[20px] font-medium tracking-tight leading-snug">
+          {project.title}
+        </h3>
+        {project.role && (
+          <div className="mt-1 text-[13px] text-muted-foreground">
+            {project.role}
+          </div>
+        )}
+        <p
+          className={`text-[14px] leading-snug text-foreground/80 ${
+            project.role ? "mt-2" : "mt-2.5"
+          }`}
+        >
+          {project.description}
+        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+          {project.stat && theme && (
+            <>
+              <p className="flex items-baseline gap-1.5">
+                <span
+                  className="text-[22px] font-semibold leading-none tracking-tight"
+                  style={{ color: theme.accent }}
+                >
+                  {project.stat.value}
+                </span>
+                <span className="text-[13px] text-muted-foreground">
+                  {project.stat.label}
+                </span>
+              </p>
+              <span aria-hidden className="h-5 w-px bg-border" />
+            </>
+          )}
+          <p className="text-[12.5px] text-muted-foreground">
+            {project.tags.join(" · ")}
+          </p>
+        </div>
+      </div>
     </>
   );
 
@@ -279,24 +220,19 @@ function DesktopRow({
       viewport={{ once: true, margin: "-40px" }}
       transition={{
         duration: 0.35,
-        delay: index * 0.04,
+        delay: index * 0.06,
         ease: [0.22, 1, 0.36, 1] as const,
       }}
-      onMouseEnter={onHover}
-      className="border-b border-border"
     >
       {project.inProgress ? (
-        <div
-          data-force-hover={forceHover || undefined}
-          className={wrapperClassName}
-        >
+        <div className={panelClassName} style={panelStyle}>
           {body}
         </div>
       ) : (
         <a
           href={project.href ?? "#contact"}
-          data-force-hover={forceHover || undefined}
-          className={wrapperClassName}
+          className={panelClassName}
+          style={panelStyle}
         >
           {body}
         </a>
@@ -305,103 +241,41 @@ function DesktopRow({
   );
 }
 
-function MobileRow({ project }: { project: Project }) {
+function Preview({ project }: { project: Project }) {
   return (
-    <div className="mt-5">
-      <div className="flex items-baseline justify-between gap-4">
-        <YearLine project={project} />
-        {project.inProgress ? (
-          <span className="text-[12px] text-muted-foreground/65">
-            In progress
+    // 16:9 frame, the shape of the widest screenshot (Notice Tracker).
+    // The image runs full width, pinned to the top, so a taller one is
+    // cropped from the bottom only, never the sides. 14px corners, a
+    // hairline outline and a soft shadow lift it off the panel.
+    <div
+      className="relative w-full overflow-hidden rounded-[14px] ring-1 ring-black/[0.06]"
+      style={{
+        aspectRatio: "16 / 9",
+        backgroundColor: "var(--surface)",
+        boxShadow: "0 1px 2px rgba(31,31,30,0.04), 0 6px 18px -6px rgba(31,31,30,0.10)",
+        margin: 0,
+      }}
+    >
+      {project.image ? (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={project.image}
+          alt={`${project.title} preview`}
+          draggable={false}
+          loading="lazy"
+          className="absolute top-0 left-0 block h-auto w-full select-none"
+          style={{ margin: 0 }}
+        />
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span
+            className="text-[18px] md:text-[22px] font-medium text-foreground/85 px-6 text-center"
+            style={{ margin: 0 }}
+          >
+            {project.title}
           </span>
-        ) : (
-          <ArrowUpRight className="size-4 text-muted-foreground" />
-        )}
-      </div>
-      <h3 className="mt-2 text-[18px] font-medium tracking-tight leading-snug">
-        {project.title}
-      </h3>
-      {project.role && (
-        <div className="mt-1 text-[13px] text-muted-foreground">
-          {project.role}
         </div>
       )}
-      <p
-        className={`text-[13.5px] leading-snug text-foreground/80 ${
-          project.role ? "mt-2" : "mt-2.5"
-        }`}
-      >
-        {project.description}
-      </p>
-      <p className="mt-2 text-[12px] text-muted-foreground/65">
-        {project.tags.join(" · ")}
-      </p>
     </div>
-  );
-}
-
-function Preview({
-  project,
-}: {
-  project: Project;
-  compact?: boolean;
-}) {
-  return (
-    <figure style={{ margin: 0 }}>
-      {/* Fixed 11:6 frame for every project so the tile shape never shifts
-          as the active entry changes. 11:6 (~1.83) matches the widest
-          featured image (Global Recon, 1.83); Clear Assurance fits with a
-          negligible bottom crop, taller exports crop from the bottom. */}
-      <div
-        className="relative w-full overflow-hidden rounded-xl border border-border"
-        style={{
-          aspectRatio: "11 / 6",
-          backgroundColor: "var(--surface)",
-          boxShadow: "var(--frame-shadow)",
-          margin: 0,
-        }}
-        aria-label={`${project.title} preview`}
-      >
-        {project.image ? (
-          // Pinned top-left, full width, natural height. The frame's
-          // overflow-hidden crops any overflow from the bottom only.
-          // No object-fit so the image cannot be cropped on the sides.
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={project.image}
-            alt={project.title}
-            draggable={false}
-            loading="lazy"
-            className="select-none"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "auto",
-              display: "block",
-              margin: 0,
-            }}
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span
-              className="text-[18px] md:text-[22px] font-medium text-foreground/85 px-6 text-center"
-              style={{ margin: 0 }}
-            >
-              {project.title}
-            </span>
-          </div>
-        )}
-      </div>
-      <figcaption className="mt-3 flex items-baseline gap-2 text-[13px]">
-        <span className="text-muted-foreground">{project.title}</span>
-        {project.ndaTag && (
-          <span className="text-[10.5px] uppercase tracking-[0.08em] font-medium text-muted-foreground/70 border border-border rounded-full px-1.5 py-0.5">
-            {project.ndaTag}
-          </span>
-        )}
-      </figcaption>
-    </figure>
   );
 }

@@ -65,8 +65,10 @@ export function ImageLightbox({
       else if (e.key === "ArrowRight")
         setIndex((i) => Math.min(frames.length - 1, i + 1));
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    // Capture phase: the dialog handles keys on its way down, so a
+    // bubbling listener never hears the arrows.
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
   }, [open, frames.length]);
 
   // Horizontal swipe to advance frames. Tracks total pointer movement

@@ -3,7 +3,7 @@
 import { useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { ImageLightbox } from "@/components/site/image-lightbox";
+import { ExhibitionLightbox } from "./exhibition-lightbox";
 
 // ── Data ─────────────────────────────────────────────────────────────
 
@@ -39,21 +39,26 @@ const tiles: Tile[] = [
   },
   {
     id: "clear-assurance",
-    name: "Clear Assurance",
+    name: "Risk Insights",
     year: "2023",
     color: "#F5F2EE",
     image: "/work/clear-assurance.png",
+    alt: "Risk Insights, an indirect tax dashboard with notices, due diligence, working capital leakage and state-wise risk.",
     lightboxCaption:
       "Proactive indirect tax intelligence dashboard. Multiple iterations, ultimately did not ship.",
   },
   {
-    id: "poc-compliance",
-    name: "POC Compliance Dashboard",
+    id: "payment-recommendations",
+    name: "Payment recommendations",
     year: "2025",
     color: "#EEF1F4",
-    image: "/exhibition/poc-compliance-dashboard.png",
+    image: "/work/payment-recommendations/closed.png",
+    // The same table with the Audit Trail side panel open over it. The
+    // tile fades to it on hover; the lightbox shows both as two frames.
+    hoverImage: "/work/payment-recommendations/open.png",
+    alt: "A payment recommendations screen that flags which vendor payments to hold until their compliance issues are resolved.",
     lightboxCaption:
-      "Compliance health POC. Surfacing patterns across past and future notices.",
+      "Payment recommendations. Which vendor payments to hold until their compliance issues are resolved.",
   },
   {
     id: "compliance-scorecard",
@@ -140,7 +145,7 @@ export function Exhibition() {
         </div>
       </div>
 
-      <ImageLightbox
+      <ExhibitionLightbox
         open={!!openTile}
         onOpenChange={(o) => {
           if (!o) setOpenTileId(null);
@@ -153,7 +158,7 @@ export function Exhibition() {
             : []
         }
         caption={openTile?.lightboxCaption}
-        title={openTile?.name}
+        title={openTile?.name ?? "Image preview"}
       />
     </section>
   );
@@ -170,8 +175,8 @@ function HoverCaption({
   year: string;
   forceVisible?: boolean;
 }) {
-  // The gradient sits in the bottom 30% of the tile, fading from transparent
-  // at the top to ~50% black at the bottom. Text rides the gradient at
+  // The gradient sits in the bottom 45% of the tile, fading from transparent
+  // at the top to ~80% black at the bottom. Text rides the gradient at
   // bottom-left with 24px padding.
   //
   // Visibility: hover-gated on devices that can hover (cursor), always
@@ -187,7 +192,7 @@ function HoverCaption({
   return (
     <div
       aria-hidden
-      className={`tile-caption absolute inset-x-0 bottom-0 h-[30%] pointer-events-none transition-opacity duration-200 ease-out ${visibilityClasses}`}
+      className={`tile-caption absolute inset-x-0 bottom-0 h-[45%] pointer-events-none transition-opacity duration-200 ease-out ${visibilityClasses}`}
     >
       {/* Caption uses a layered text-shadow so the white type stays legible
           on light screenshots without forcing a heavy gradient over the
@@ -200,11 +205,11 @@ function HoverCaption({
             "0 1px 2px rgba(0,0,0,0.6), 0 0 14px rgba(0,0,0,0.45)",
         }}
       >
-        <span className="text-white font-medium text-[15px] tracking-tight">
+        <span className="text-white font-semibold text-[16px] tracking-tight">
           {name}
         </span>
-        <span className="text-white/85 font-normal text-[13px]">·</span>
-        <span className="text-white/85 font-normal text-[13px]">{year}</span>
+        <span className="text-white/90 font-medium text-[13.5px]">·</span>
+        <span className="text-white/90 font-medium text-[13.5px]">{year}</span>
       </div>
     </div>
   );

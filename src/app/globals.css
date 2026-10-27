@@ -288,12 +288,78 @@
    On touch viewports the gradient lightens so the underlying screenshot
    is not dimmed beyond comfortable reading, since the caption cannot be
    dismissed by moving the cursor away. */
+/* "Now building" line under Selected work. The ✻ spins while a verb
+   shows; the word fades up and out, then in. Verbs shimmer light over
+   1.6s; "Now building" shimmers too but stays dark, over 2.6s. */
+.now-building-mark {
+  display: inline-block;
+  width: 1em;
+  margin-right: 0.35em;
+  text-align: center;
+  font-size: 1em;
+  font-weight: 600;
+  color: #C8783A;
+  opacity: 0.85;
+  transition: opacity 0.4s;
+}
+.now-building-mark.is-spinning {
+  opacity: 1;
+  animation: now-building-turn 3.2s linear infinite;
+}
+.now-building-word {
+  display: inline-block;
+  color: var(--foreground);
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+}
+.now-building-word.is-thinking {
+  --nb-quiet: color-mix(in oklab, var(--muted-foreground) 72%, var(--background));
+  font-weight: 400;
+  background: linear-gradient(90deg, var(--nb-quiet) 0%, var(--nb-quiet) 35%, var(--foreground) 50%, var(--nb-quiet) 65%, var(--nb-quiet) 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: now-building-shimmer 1.6s linear infinite;
+}
+.now-building-word.is-final {
+  font-weight: 500;
+  background: linear-gradient(90deg, var(--foreground) 0%, var(--foreground) 38%, #9A9EA5 50%, var(--foreground) 62%, var(--foreground) 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: now-building-shimmer 2.6s linear infinite;
+}
+.now-building-word.is-leave {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+.now-building-word.is-enter {
+  opacity: 0;
+  transform: translateY(4px);
+}
+@keyframes now-building-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: 0% 0; }
+}
+@keyframes now-building-turn {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .now-building-word { transition: none; }
+  .now-building-mark.is-spinning,
+  .now-building-word.is-thinking,
+  .now-building-word.is-final { animation: none; }
+  .now-building-mark { opacity: 0.85; }
+  .now-building-word.is-final { background: none; color: var(--foreground); }
+}
+
 .tile-caption {
-  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%);
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.5) 45%, rgba(0, 0, 0, 0) 100%);
 }
 @media (hover: none) {
   .tile-caption {
-    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0) 100%);
   }
 }
 
