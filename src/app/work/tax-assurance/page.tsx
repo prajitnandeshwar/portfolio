@@ -12,6 +12,7 @@ import { StatRow } from "@/components/case-study/stat-row";
 import { Figure, Frame } from "@/components/case-study/figure";
 import { VideoFigure } from "@/components/case-study/video-figure";
 import { HeroLayers } from "@/components/case-study/hero-layers";
+import { FranceChatHero } from "@/components/case-study/france-chat-hero/france-chat-hero";
 import { ChainDiagram } from "@/components/case-study/chain-diagram";
 import { LiveEmbed } from "@/components/case-study/live-embed";
 import { NextCaseStudy } from "@/components/case-study/next-case-study";
@@ -153,10 +154,14 @@ export default function TaxAssurancePage() {
               caption="Asking the board which documents make up the €12,820 at risk. The chat is CTAI’s; the board it reads is mine."
               tag="Demo data"
             >
-              {/* The film sits in the same frame as a screenshot, on a warm
-                  dotted backdrop, so its cropped edges read as a window. */}
+              {/* An animated illustration (stageshow), drawn live rather than
+                  filmed: the warm dotted backdrop is its ground, and the CTAI
+                  window inside runs off the panel's foot. No padding here:
+                  the scene keeps its own gutter. */}
               <div
-                className="rounded-2xl border p-3 min-[480px]:p-5 md:p-10"
+                className="overflow-hidden rounded-2xl border"
+                role="img"
+                aria-label="Asking CTAI's chat which documents make up the €12,820 at risk on the France Tax Assurance board"
                 style={{
                   borderColor: "#E5E2DC",
                   backgroundColor: "#F3F0EB",
@@ -166,24 +171,7 @@ export default function TaxAssurancePage() {
                   margin: 0,
                 }}
               >
-                <div
-                  className="overflow-hidden rounded-xl border"
-                  style={{
-                    backgroundColor: "var(--surface)",
-                    borderColor: "var(--border)",
-                    boxShadow: "var(--frame-shadow)",
-                    margin: 0,
-                  }}
-                >
-                  <VideoFigure
-                    src="/work/tax-assurance/ask-the-board.mp4"
-                    poster="/work/tax-assurance/ask-the-board-poster.png"
-                    alt="Asking CTAI's chat which documents make up the €12,820 at risk on a Tax Assurance board"
-                    width={1600}
-                    height={874}
-                    eager
-                  />
-                </div>
+                <FranceChatHero />
               </div>
             </Figure>
           </div>

@@ -1,0 +1,599 @@
+/* All rules belong to this example, including its compact design. */
+.frc {
+  /* A wide hero: the CTAI window inset top and sides, off the bottom, so the
+     chat's composer sits a gutter above the stage edge */
+  & .ss-stage {
+    --gutter: 32px;
+    --chat: 360px;
+    --cream: #f4f1ea;
+    --paper: #fbfaf7;
+    --line: #e9e5dc;
+    --ink: #16181d;
+    --muted: #5c6370;
+    --faint: #8a8f99;
+    --navy: #0c1524;
+    --navy-on: #1c2b49;
+    --navy-ink: #c6d0e0;
+    --navy-sub: #8291ac;
+    --link: #3e6db5;
+    --ss-accent: #3e6db5;
+    --ss-accent-soft: rgba(62, 109, 181, 0.14);
+    /* On the case study the figure's dotted panel is the ground: no plate
+       of our own, and the panel's rounded edge does the clipping */
+    overflow: hidden;
+    background: transparent;
+  }
+
+  .frc-window {
+    position: absolute;
+    top: var(--gutter);
+    left: var(--gutter);
+    width: calc(100% - 2 * var(--gutter));
+    height: 608px;
+    box-shadow: var(--ss-shadow-hero);
+  }
+
+  .frc-body {
+    display: flex;
+    height: 100%;
+    background: var(--paper);
+  }
+
+  /* CTAI's rail */
+  .frc-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: none;
+    gap: 6px;
+    width: 64px;
+    padding: 14px 0;
+    background: var(--cream);
+    border-right: 1px solid var(--line);
+    color: #3b3f47;
+  }
+
+  .frc-rail__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 54px;
+    padding: 7px 0 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .frc-rail__item[data-on] {
+    background: #e9e5dc;
+    color: var(--ink);
+  }
+
+  .frc-rail__app { color: #3e8ed0; }
+  .frc-rail__app .ss-text { color: var(--muted); }
+
+  .frc-rail__rule {
+    width: 32px;
+    height: 1px;
+    margin: 4px 0;
+    background: var(--line);
+  }
+
+  /* The chat column opens to full width; its contents are fixed and pinned
+     to its right edge, so the panel slides in rather than reflowing */
+  .frc-chat {
+    position: relative;
+    flex: none;
+    width: 0;
+    overflow: hidden;
+    transition: width 0.6s cubic-bezier(0.45, 0, 0.1, 1);
+  }
+
+  .frc-chat[data-open] { width: var(--chat); }
+
+  .frc-chat__inner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    width: var(--chat);
+    /* The window runs 40px off the stage; the composer stops a gutter above it */
+    padding-bottom: 72px;
+    background: var(--paper);
+    box-shadow: inset -1px 0 0 var(--line);
+  }
+
+  /* The panel's contents stay faint until its edge has passed: they fade in
+     behind the opening edge, and out before it closes */
+  .frc-chat__inner > * {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .frc-chat[data-open] .frc-chat__inner > * {
+    opacity: 1;
+    transition: opacity 0.3s ease 0.42s;
+  }
+
+  .frc-chat__head {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
+    padding: 0 12px 0 14px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .frc-agent {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .frc-iconbtn {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    color: var(--ink);
+  }
+
+  .frc-iconbtn[data-hover] { background: #efece4; }
+
+  /* The thread is anchored to the composer; older lines go up under the header */
+  .frc-thread {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 12px;
+    min-height: 0;
+    padding: 0 16px 14px;
+    overflow: hidden;
+    /* Older lines soften as they go up under the header */
+    mask-image: linear-gradient(to bottom, transparent, #000 28px);
+  }
+
+  .frc-q {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .frc-q__bubble {
+    max-width: 82%;
+    padding: 9px 13px;
+    border-radius: 10px;
+    background: #111827;
+    color: #fff;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .frc-about {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 24px;
+    padding: 0 9px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: #fdfcf8;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .frc-about__app { color: var(--ink); font-weight: 500; }
+
+  .frc-meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    width: 50px;
+    height: 14px;
+    font-size: 11px;
+    color: var(--faint);
+  }
+
+  .frc-step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 16px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  /* While the agent works its step reads a touch lighter, pulsing gently */
+  .frc-step[data-busy] { animation: frc-pulse 1.6s ease-in-out infinite; }
+
+  .frc-answer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .frc-intro {
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+
+  /* The product bolds the figure; no highlight behind it */
+  .frc-intro [data-mark] { font-weight: 600; background: none; box-shadow: none; }
+  .frc-intro [data-mark]::before, .frc-intro [data-mark]::after { display: none; }
+
+  .frc-table {
+    border-top: 1px solid var(--line);
+  }
+
+  .frc-tr {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr) 52px;
+    gap: 10px;
+    align-items: center;
+    height: 30px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  .frc-tr--head {
+    font-weight: 600;
+    font-size: 11.5px;
+  }
+
+  .frc-tr--rest {
+    grid-template-columns: minmax(0, 1fr) 52px;
+    color: var(--muted);
+    border-bottom: 0;
+  }
+
+  .frc-doc {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+
+  .frc-issue { color: #3b3f47; }
+
+  .frc-num {
+    display: block;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* The composer: a card with the text line over its tools */
+  .frc-composer {
+    flex: none;
+    margin: 0 14px;
+    padding: 4px 10px 10px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
+  }
+
+  .frc-field .ss-field__box {
+    padding: 0 4px;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .frc-field[data-focused] .ss-field__box { box-shadow: none; }
+
+  .frc-tools {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+    color: var(--muted);
+  }
+
+  .frc-tool { flex: none; }
+
+  .frc-tool--label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+  }
+
+  .frc-model {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    font-size: 12px;
+  }
+
+  .frc-model__name { color: var(--ink); }
+  .frc-model__effort { color: var(--faint); }
+
+  .frc-send {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    background: #9ca3af;
+    color: #fff;
+    transition: background 0.2s ease;
+  }
+
+  .frc-send[data-ready] { background: var(--ink); }
+  .frc-send[data-busy] { background: #ef4444; }
+
+  /* CTAI's app pane */
+  .frc-app {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .frc-app__head {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 6px;
+    height: 48px;
+    padding: 0 14px 0 18px;
+    border-bottom: 1px solid #eceef1;
+    white-space: nowrap;
+  }
+
+  .frc-app__kind { font-size: 13px; color: var(--muted); }
+
+  .frc-app__name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .frc-pill {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+    margin-left: 4px;
+    padding: 0 8px;
+    border-radius: 6px;
+    background: #e8f5ea;
+    font-size: 11px;
+    font-weight: 500;
+    color: #2e7d32;
+  }
+
+  .frc-app__actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 14px;
+    margin-left: auto;
+    padding-left: 12px;
+  }
+
+  .frc-chatbtn {
+    --ss-button-bg: #16181d;
+    background: #16181d;
+    color: #fff;
+  }
+
+  .frc-chatbtn[data-open] { background: #2b2f3a; }
+  .frc-app__icon { flex: none; color: var(--ink); }
+
+  /* The board keeps its width and is clipped by the pane as the chat opens */
+  .frc-board {
+    display: flex;
+    will-change: transform;
+    flex: 1;
+    width: 912px;
+    min-height: 0;
+  }
+
+  .frc-nav {
+    display: flex;
+    flex-direction: column;
+    flex: none;
+    gap: 2px;
+    width: 176px;
+    padding: 18px 10px;
+    background: var(--navy);
+    color: var(--navy-ink);
+  }
+
+  .frc-nav__org {
+    margin: 0 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .frc-nav__item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 7px;
+    font-size: 12.5px;
+  }
+
+  .frc-nav__item[data-on] { background: var(--navy-on); color: #fff; }
+
+  .frc-nav__item[data-sub] {
+    height: 26px;
+    padding-left: 33px;
+    font-size: 12px;
+    color: var(--navy-sub);
+  }
+
+  .frc-main {
+    flex: 1;
+    min-width: 0;
+    padding: 18px 22px;
+    background: #fbfbfa;
+  }
+
+  .frc-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .frc-title__name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .frc-tag {
+    display: flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 9px;
+    border-radius: 11px;
+    background: #f1f2f4;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .frc-sub {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .frc-scope {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .frc-scope__pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 12px;
+    color: #3b3f47;
+  }
+
+  .frc-recon {
+    margin-top: 18px;
+    padding: 14px;
+    border: 1px solid #eceef1;
+    border-radius: 12px;
+    background: #f6f7f9;
+  }
+
+  .frc-recon__head {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .frc-recon__title { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .frc-recon__sub { font-size: 11.5px; color: var(--muted); }
+
+  .frc-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 158px);
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .frc-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px;
+    border: 1px solid #eceef1;
+    border-radius: 10px;
+    background: #fff;
+  }
+
+  .frc-kpi__label { font-size: 11.5px; color: var(--muted); }
+
+  .frc-kpi__value {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+
+  .frc-kpi__value--risk { color: #b42318; }
+  .frc-kpi__link { font-size: 11.5px; color: var(--link); }
+
+  .frc-mix {
+    display: flex;
+    height: 8px;
+    margin-top: 16px;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+
+  .frc-mixrows { margin-top: 10px; }
+
+  .frc-mixrow {
+    display: flex;
+    justify-content: space-between;
+    height: 30px;
+    align-items: center;
+    border-bottom: 1px solid #eceef1;
+  }
+
+  /* Compact: the chat panel alone as a whole card, one gutter all round;
+     the composer keeps the card's 14px inset on every side */
+  & .ss-stage[data-layout="compact"] {
+    --gutter: 16px;
+    --chat: 100%;
+
+    .frc-card {
+      position: absolute;
+      top: var(--gutter);
+      left: var(--gutter);
+      right: var(--gutter);
+      display: flex;
+      bottom: var(--gutter);
+      overflow: hidden;
+      border-radius: 14px;
+      box-shadow: var(--ss-shadow-hero);
+    }
+
+    .frc-chat { flex: 1; }
+    .frc-chat__inner { width: 100%; padding-bottom: 14px; box-shadow: none; }
+    /* The table's rules run edge to edge of the card; the cells keep the inset */
+    .frc-table { margin: 0 -16px; }
+    .frc-tr { grid-template-columns: 86px minmax(0, 1fr) 46px; gap: 8px; padding: 0 16px; }
+    .frc-tr--rest { grid-template-columns: minmax(0, 1fr) 46px; }
+    .frc-tool--label { display: none; }
+  }
+}
+
+@keyframes frc-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
