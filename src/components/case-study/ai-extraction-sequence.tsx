@@ -117,7 +117,7 @@ export function AIExtractionSequence() {
         >
           <FullBleedImage
             src="/work/notice-tracker/ai-pdf.png"
-            alt="Raw government PDF, Form GST REG-05"
+            alt="Raw government PDF, Form GST DRC-01"
           />
         </motion.div>
 

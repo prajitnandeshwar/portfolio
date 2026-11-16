@@ -21,6 +21,11 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 const SWIPE_THRESHOLD = 60;
 const SWIPE_VERT_BIAS = 1.5;
 
+// How long each step of an animated frame stays on screen.
+const STEP_MS = 2800;
+
+export type FrameStep = { src: string; label: string; caption?: string };
+
 type ImageLightboxProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -35,6 +40,11 @@ type ImageLightboxProps = {
   // step through. Falls back to the shared caption when a frame has none.
   captions?: string[];
   initialIndex?: number;
+  // Optional: some frames are a short flow (click, wait, read) rather
+  // than one screen. Give that frame a list of steps and it plays them in
+  // place, looping on its own. It still counts as one item for the
+  // arrows and dots.
+  steps?: (FrameStep[] | undefined)[];
   // Optional: short label used for the (visually hidden) dialog title.
   // Required for accessibility; falls back to "Image preview".
   title?: string;
@@ -51,6 +61,7 @@ export function ImageLightbox({
   caption: sharedCaption,
   captions,
   initialIndex = 0,
+  steps,
   title = "Image preview",
   closeOnOutsideClick = false,
 }: ImageLightboxProps) {
@@ -60,6 +71,29 @@ export function ImageLightbox({
   useEffect(() => {
     if (open) setIndex(initialIndex);
   }, [open, initialIndex]);
+
+  // Animated frames: which step is showing. Every time you land on a
+  // frame it starts again from step one and loops on its own. People who
+  // ask for reduced motion still see every step, just without the fade.
+  const frameSteps = steps?.[index];
+  //
+  // `prev` is the step that was showing before. It stays fully visible
+  // underneath while the new step fades in on top, so the swap never
+  // goes half see-through (that half-and-half moment read as a blink).
+  const [{ step, prev }, setSteps] = useState({ step: 0, prev: -1 });
+  const setStep = (next: (s: number) => number) =>
+    setSteps((c) => ({ step: next(c.step), prev: c.step }));
+  useEffect(() => {
+    setSteps({ step: 0, prev: -1 });
+  }, [index, open]);
+  useEffect(() => {
+    if (!open || !frameSteps || frameSteps.length < 2) return;
+    const t = window.setTimeout(
+      () => setStep((s) => (s + 1) % frameSteps.length),
+      STEP_MS,
+    );
+    return () => window.clearTimeout(t);
+  }, [open, frameSteps, step]);
 
   // Keyboard navigation. Escape is handled by Dialog itself.
   useEffect(() => {
@@ -105,7 +139,9 @@ export function ImageLightbox({
   };
 
   // The text under the image follows the frame you are on.
-  const caption = captions?.[index] ?? sharedCaption;
+  // On an animated frame it follows the step instead.
+  const caption =
+    frameSteps?.[step]?.caption ?? captions?.[index] ?? sharedCaption;
 
   const hasFrames = frames.length > 0;
   const multiFrame = frames.length > 1;
@@ -169,6 +205,34 @@ export function ImageLightbox({
           >
             {node ? (
               <div className="w-full">{node}</div>
+            ) : frameSteps && frameSteps.length > 1 ? (
+              /* All steps are stacked on top of each other, so there is no
+                 reload between them. The new step fades in on top of the
+                 old one, which stays solid underneath; every other step
+                 hides instantly behind them. The first one sits in the
+                 normal flow and sets the height. */
+              <div key={frames[index]} className="relative">
+                {frameSteps.map((st, i) => (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    key={st.src}
+                    src={st.src}
+                    alt={i === step ? `${title}: ${st.label}` : ""}
+                    aria-hidden={i !== step}
+                    draggable={false}
+                    className={`block w-full h-auto select-none ${
+                      i === 0 ? "relative" : "absolute inset-0"
+                    } ${
+                      i === step
+                        ? "z-[2] opacity-100 transition-opacity duration-700 ease-in-out motion-reduce:transition-none"
+                        : i === prev
+                          ? "z-[1] opacity-100"
+                          : "z-0 opacity-0"
+                    }`}
+                    style={{ margin: 0 }}
+                  />
+                ))}
+              </div>
             ) : hasFrames ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
@@ -189,7 +253,7 @@ export function ImageLightbox({
           {/* Caption sits under the card on the dim backdrop. */}
           {caption && (
             <p
-              className="text-white/85 text-[13px] md:text-[14px] text-center leading-relaxed max-w-2xl"
+              className="text-white/85 text-[13px] md:text-[14px] text-center leading-relaxed w-full text-balance"
               style={{ margin: 0 }}
             >
               {caption}

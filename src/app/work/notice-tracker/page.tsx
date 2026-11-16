@@ -222,7 +222,7 @@ const PLACEMENTS = [
     layout: "panelTop",
     label: "Summary on top",
     status: "notShipped",
-    verdict: "Summary and reasons, the first thing in every case.",
+    verdict: "It pushed the stages, the actual work, down the page.",
     screens: [
       {
         src: "/work/notice-tracker/v3/caseview-5-shipped-clear-ai-panel.webp",
@@ -813,7 +813,7 @@ export default function NoticeTrackerPage() {
 
           <PlacementSchematics
             placements={[...PLACEMENTS]}
-            caption="Five places for the same AI reading. Click any sketch to see the real screen."
+            caption="Five iterations on where the AI reading should live. Click any sketch to see the real screen."
           />
 
           <Call

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Sparkles } from "lucide-react";
-import { StatusBadge, type IterationStatus } from "@/components/case-study/status-badge";
+import { type IterationStatus } from "@/components/case-study/status-badge";
 import { ImageLightbox } from "@/components/site/image-lightbox";
 
 // Five places the AI reading could live, drawn as small layout sketches.
@@ -13,10 +13,9 @@ import { ImageLightbox } from "@/components/site/image-lightbox";
 // Each tile opens the real screen in the lightbox. Hover lifts the tile
 // (a little larger, a deeper shadow) so it reads as clickable.
 //
-// Some placements were a flow, not one screen (click, wait, read). The
-// lightbox holds every screen of every placement in order, so its arrows
-// step through those states, and the line under the image says what each
-// one shows ("Behind a button, step 2 of 3. ...").
+// Some placements were a flow, not one screen (click, wait, read). In the
+// lightbox those play in place as a looping animation with a step strip
+// under them; the arrows move between the five placements only.
 //
 // Palette (matched to the Figma frame): neutral grey wireframes. A tile
 // marked shipped turns warm (none of these five did: the shipped Clear AI
@@ -138,20 +137,19 @@ export function PlacementSchematics({
 }) {
   const [openAt, setOpenAt] = useState<number | null>(null);
 
-  // One flat list of every screen, so the lightbox arrows walk through the
-  // placements and their states in order. `start` is where each tile's
-  // first screen sits in that list.
-  const frames = placements.flatMap((p) =>
-    p.screens.map((s, i) => ({
-      src: s.src,
-      caption:
-        p.screens.length > 1
-          ? `${p.label}, step ${i + 1} of ${p.screens.length}. ${s.caption}`
-          : `${p.label}. ${s.caption}`,
-    })),
-  );
-  const start = placements.map((_, i) =>
-    placements.slice(0, i).reduce((n, p) => n + p.screens.length, 0),
+  // One lightbox item per placement. A placement that was a flow (click,
+  // wait, read) plays its screens in place as a short animation, rather
+  // than each state showing up as a separate item.
+  const frames = placements.map((p) => p.screens[0].src);
+  const captions = placements.map((p) => `${p.label}. ${p.screens[0].caption}`);
+  const steps = placements.map((p) =>
+    p.screens.length > 1
+      ? p.screens.map((s, i) => ({
+          src: s.src,
+          label: s.step ?? `Step ${i + 1}`,
+          caption: `${p.label}, ${(s.step ?? `step ${i + 1}`).toLowerCase()}. ${s.caption}`,
+        }))
+      : undefined,
   );
 
   return (
@@ -163,7 +161,7 @@ export function PlacementSchematics({
             <div key={p.label}>
               <button
                 type="button"
-                onClick={() => setOpenAt(start[i])}
+                onClick={() => setOpenAt(i)}
                 aria-label={`Open the real screen: ${p.screens[0].alt}`}
                 className={`block w-full cursor-zoom-in rounded-lg transition-[transform,box-shadow,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:scale-[1.04] hover:shadow-[0_10px_24px_-6px_rgba(31,31,30,0.18),0_2px_6px_rgba(31,31,30,0.06)] focus-visible:-translate-y-0.5 focus-visible:scale-[1.04] focus-visible:shadow-[0_10px_24px_-6px_rgba(31,31,30,0.18)] motion-reduce:hover:translate-y-0 motion-reduce:hover:scale-100 ${
                   shipped
@@ -181,8 +179,6 @@ export function PlacementSchematics({
                 <p className="text-[13px] leading-[1.45] text-[#6B6B68]" style={{ margin: 0 }}>
                   {p.verdict}
                 </p>
-                {/* Status sits under the verdict, as in Figma. */}
-                <StatusBadge status={p.status} />
               </div>
             </div>
           );
@@ -196,8 +192,9 @@ export function PlacementSchematics({
       <ImageLightbox
         open={openAt !== null}
         onOpenChange={(o) => !o && setOpenAt(null)}
-        frames={frames.map((f) => f.src)}
-        captions={frames.map((f) => f.caption)}
+        frames={frames}
+        captions={captions}
+        steps={steps}
         initialIndex={openAt ?? 0}
         caption={caption}
         title="Five placements for the AI reading"
