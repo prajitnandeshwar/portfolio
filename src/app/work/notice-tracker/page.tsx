@@ -21,9 +21,14 @@ import { PivotVisual } from "@/components/case-study/pivot-visual";
 import { AIExtractionSequence } from "@/components/case-study/ai-extraction-sequence";
 import { ChaosNoticesPile } from "@/components/case-study/chaos-notices-pile";
 import { Takeaways } from "@/components/case-study/takeaways";
-import { OutcomesSection } from "@/components/case-study/outcomes-section";
 import { WhatCameNext } from "@/components/case-study/what-came-next";
 import { NextCaseStudy } from "@/components/case-study/next-case-study";
+import { AnnotatedScreens } from "@/components/case-study/annotated-screens";
+import { OutcomesSection } from "@/components/case-study/outcomes-section";
+import { NoticeVsCase } from "@/components/case-study/notice-vs-case";
+import { OptionsRow } from "@/components/case-study/options-row";
+import { AiWorkSplit, type WorkSplitRow } from "@/components/case-study/ai-work-split";
+import { PlacementSchematics } from "@/components/case-study/placement-schematics";
 
 export const metadata: Metadata = {
   // The root layout appends " · Prajit Nandeshwar" via its title
@@ -55,6 +60,179 @@ const STATS = [
   { value: "₹2.3", suffix: "Cr", label: "Annual revenue" },
 ];
 
+// Iteration data. Every new image lives in public/work/notice-tracker/v3.
+// Each figure uses a different pattern, chosen to fit the decision it shows.
+
+const CASEVIEW_OPTIONS = [
+  {
+    label: "Every stage as rows",
+    src: "/work/notice-tracker/v3/caseview-1-table.webp",
+    alt: "Case view exploration showing every stage of a case as rows in one table.",
+    verdict: "Complete, but everything competes at once.",
+  },
+  {
+    label: "Banner and locked stages",
+    src: "/work/notice-tracker/v3/caseview-2-banner.webp",
+    alt: "Case view exploration with a large case banner on top and later stages locked below it.",
+    verdict: "A loud header pushed the actual work down the page.",
+  },
+  {
+    label: "Timeline on the left",
+    src: "/work/notice-tracker/v3/caseview-3-left-timeline.webp",
+    alt: "Case view exploration with a stage timeline in a left column and stage details on the right.",
+    verdict: "Clear order, but it split attention across two columns.",
+  },
+  {
+    label: "Status timeline",
+    src: "/work/notice-tracker/v3/caseview-4-status-timeline.webp",
+    alt: "Case view exploration with a horizontal status timeline across the top of the case.",
+    verdict: "The closest, but it became a second timeline beside the audit trail.",
+  },
+];
+
+const AI_ROWS: WorkSplitRow[] = [
+  {
+    title: "No AI",
+    status: "replaced",
+    outcome: "Almost nobody filled it in.",
+    cells: [
+      { who: "you", text: "Opens the PDF" },
+      { who: "you", text: "Types reasons in" },
+      { who: "you", text: "Their own reading" },
+    ],
+    ready: "Whenever someone gets to it",
+    src: "/work/notice-tracker/v3/ai-1-manual-reasons.webp",
+    alt: "Case view with empty notice reason fields for the user to fill in by hand.",
+  },
+  {
+    title: "On demand",
+    status: "replaced",
+    outcome: "Fine for one case, tedious across many.",
+    cells: [
+      { who: "ai", text: "Reads it, after a click" },
+      { who: "ai", text: "Fills the case" },
+      { who: "you", text: "Waits, then scans" },
+    ],
+    ready: "After a click and a wait, per case",
+    src: "/work/notice-tracker/v3/ai-2-on-demand.webp",
+    alt: "A Summarise with Clear Intelligence button in the case, with a loading message.",
+  },
+  {
+    title: "Review gate",
+    status: "notShipped",
+    outcome: "Approving a value meant reading the PDF.",
+    cells: [
+      { who: "ai", text: "Reads every notice" },
+      { who: "ai", text: "Proposes values" },
+      { who: "you", text: "Reopens the PDF to approve each one", flag: true },
+    ],
+    ready: "Only after every value is approved",
+    src: "/work/notice-tracker/v3/ai-3-review-gate.webp",
+    alt: "A review screen asking the user to check AI generated fields, grouped by confidence.",
+  },
+  {
+    title: "Overnight",
+    status: "shipped",
+    outcome: "The case is ready before the team is.",
+    cells: [
+      { who: "ai", text: "Reads every notice overnight" },
+      { who: "ai", text: "Fills and marks each value" },
+      { who: "ai", text: "Leaves a blank when unsure" },
+    ],
+    ready: "Before the team starts work",
+    src: "/work/notice-tracker/v3/ai-4-overnight-sync.webp",
+    alt: "A sync summary showing new cases and fields Clear AI filled in the background.",
+  },
+];
+
+const PLACEMENTS = [
+  {
+    layout: "underPdf",
+    label: "Under the PDF",
+    status: "explored",
+    verdict: "Easy to miss below a long document.",
+    screens: [
+      {
+        src: "/work/notice-tracker/v3/placement-1-under-pdf.webp",
+        alt: "A notice PDF open in the case with the AI summary placed below it.",
+        caption: "The summary sits under the open notice. On a long document it drops out of view.",
+      },
+    ],
+  },
+  {
+    layout: "compareDocs",
+    label: "Beside two documents",
+    status: "explored",
+    verdict: "Useful for comparing, crowded for everything else.",
+    screens: [
+      {
+        src: "/work/notice-tracker/v3/placement-2-compare-docs.webp",
+        alt: "Two documents open side by side with an AI summary below them.",
+        caption: "The notice and its annexure open side by side, with one summary under both.",
+      },
+    ],
+  },
+  {
+    layout: "button",
+    label: "Behind a button",
+    status: "replaced",
+    verdict: "Slow, and still a manual action.",
+    screens: [
+      {
+        step: "Click",
+        src: "/work/notice-tracker/v3/placement-3-button-1-idle.webp",
+        alt: "A case with a Summarise with Clear AI button above the stages.",
+        caption: "The case opens with no reading. The user has to ask for it.",
+      },
+      {
+        step: "Wait",
+        src: "/work/notice-tracker/v3/placement-3-button-2-loading.webp",
+        alt: "Clear AI reading the notice after the button was clicked.",
+        caption: "Clear AI reads the notice while the user waits.",
+      },
+      {
+        step: "Read",
+        src: "/work/notice-tracker/v3/placement-3-button-3-result.webp",
+        alt: "The AI summary shown in a popover over the case.",
+        caption: "The summary appears in a popover, and the user repeats this for every case.",
+      },
+    ],
+  },
+  {
+    layout: "chat",
+    label: "In a chat",
+    status: "notShipped",
+    verdict: "Our users live in Excel. We did not expect them to chat.",
+    screens: [
+      {
+        step: "Open",
+        src: "/work/notice-tracker/v3/placement-4-chat.webp",
+        alt: "A Clear AI chat panel with suggested questions about the notice.",
+        caption: "The chat opens empty, with a few suggested questions.",
+      },
+      {
+        step: "Ask",
+        src: "/work/notice-tracker/v3/placement-4-chat-2-reply.webp",
+        alt: "A conversation with Clear AI about how to reply to a notice.",
+        caption: "Answers come one question at a time, in a panel over the case.",
+      },
+    ],
+  },
+  {
+    layout: "panelTop",
+    label: "Summary on top",
+    status: "notShipped",
+    verdict: "Summary and reasons, the first thing in every case.",
+    screens: [
+      {
+        src: "/work/notice-tracker/v3/caseview-5-shipped-clear-ai-panel.webp",
+        alt: "Case view exploration with the AI summary and reasons in a block above the stages.",
+        caption: "Summary and reasons sit above the stages, ready before anyone opens the PDF.",
+      },
+    ],
+  },
+] as const;
+
 const OUTCOMES = [
   { value: "100", suffix: "+", label: "Enterprises onboarded" },
   { value: "85", suffix: "%", label: "User adoption" },
@@ -83,32 +261,30 @@ const TAKEAWAYS = [
     heading: "Find the canonical key.",
     body: (
       <p>
-        For Notice Tracker, it was the Case ID. Every complex domain has one.
-        The stable identifier that makes everything else coherent. Finding it
-        is the difference between a feature and a product.
+        For Notice Tracker it was the Case ID: one stable identifier that let
+        the dashboard, the case list and the AI all describe the same thing.
       </p>
     ),
   },
   {
     number: "02",
-    heading: "Names defend roadmaps.",
+    heading: "Try the manual path first.",
     body: (
       <p>
-        Renaming Management to Tracker did more for product clarity than any
-        roadmap document. The name encodes the promise. Encode the right
-        promise.
+        Letting users add notice reasons by hand failed. That told us the AI
+        had to do the reading without being asked, which is what the
+        overnight sync does.
       </p>
     ),
   },
   {
     number: "03",
-    heading: "Discipline beats demand.",
+    heading: "Narrow when the usage says so.",
     body: (
       <p>
-        Customers asked for Direct Tax. Data said it would not work. Killing
-        it was harder than building Notice Tracker, and more important. The
-        thing that ships well is rarely the thing that was loudest in the
-        meeting.
+        We planned for every framework. Usage showed GST was where customers
+        got value, so ITR and TDS were scaled back and the effort went into
+        GST.
       </p>
     ),
   },
@@ -118,8 +294,8 @@ const TAKEAWAYS = [
     body: (
       <p>
         The AI extraction is usually right and occasionally not. The design
-        work was not making it perfect. It was making sure a user could tell
-        what the government sent from what the system read.
+        work was making sure a user can always tell what the government sent
+        from what the system read.
       </p>
     ),
   },
@@ -139,11 +315,11 @@ export default function NoticeTrackerPage() {
           backLabel="Back to work"
           title="Notice Tracker"
           accentChar="."
-          tagline="AI-powered platform for managing GST notices at scale."
+          tagline="Turning scattered GST notices into cases a tax team can track. From a two-day build customers rejected, to ₹2.3 Cr in annual revenue."
           credits={[
             { label: "Role", value: "Lead Designer & PM" },
             { label: "Timeline", value: "2025–26" },
-            { label: "Read", value: "9 min" },
+            { label: "Read", value: "11 min" },
             { label: "Team", value: "Founder, Product, Engineering, Sales" },
           ]}
           visual={<HeroDashboardPlaceholder />}
@@ -181,11 +357,83 @@ export default function NoticeTrackerPage() {
           </Prose>
         </CaseStudySection>
 
+        {/* 4 · The first attempt (new in v3) */}
+        <CaseStudySection title="The first attempt.">
+          <Prose>
+            <p>
+              When a customer asked for help, we answered fast. We built a
+              GST notice tracker in two days on our old framework: every
+              notice moving through seven legal stages, each stage with an
+              owner and target dates.
+            </p>
+            <p>
+              It was shot down. Users could not tell what to track, the stages
+              confused them, and assigning owners was tedious. We had built what
+              was asked for before understanding the work.
+            </p>
+          </Prose>
+
+          <AnnotatedScreens
+            screens={[
+              {
+                src: "/work/notice-tracker/v3/v0-notice-overview.webp",
+                alt: "Version 0 overview listing GST notices for each business, with counts broken down by seven legal stages.",
+                caption: "Version 0 overview: every business, every stage, in one table.",
+                aspect: "504/285",
+                pins: [
+                  {
+                    n: 1,
+                    x: 28,
+                    y: 28,
+                    note: {
+                      title: "No sense of what to track",
+                      body: "Totals for every stage and every business, all at once. Nothing said what needed attention.",
+                    },
+                  },
+                  {
+                    n: 2,
+                    x: 74,
+                    y: 42,
+                    note: {
+                      title: "Seven legal stages",
+                      body: "Every notice split from summons to Supreme Court. The stages confused more than they helped.",
+                    },
+                  },
+                ],
+              },
+              {
+                src: "/work/notice-tracker/v3/v0-stage-editor.webp",
+                alt: "Version 0 stage editor where each of seven stages has an owner, a start date and a target date.",
+                caption: "Version 0 stage editor: an owner and dates for every stage.",
+                aspect: "504/285",
+                pins: [
+                  {
+                    n: 3,
+                    x: 37,
+                    y: 48,
+                    note: {
+                      title: "An owner for every stage",
+                      body: "Each stage needed an owner, a start date and a target date, set by hand. Tedious, so nobody kept it up.",
+                    },
+                  },
+                ],
+              },
+            ]}
+          />
+
+          <Prose>
+            <p>
+              That failure is where the real product started. This time, I went
+              to understand the work before designing anything.
+            </p>
+          </Prose>
+        </CaseStudySection>
+
         {/* 4 · Understanding the chaos */}
         <CaseStudySection title="Understanding the chaos.">
           <Prose>
             <p>
-              Before we talked to customers, I spent a week inside the
+              Before talking to customers again, I spent a week inside the
               government&rsquo;s GST portal. Mapped every screen, every
               workflow, every data field. I needed to know what the system
               actually returned, not what customers thought it returned.
@@ -207,7 +455,7 @@ export default function NoticeTrackerPage() {
                 protected them from financial damage.
               </p>
               <p>
-                We ran the research as three two-week sprints, with the
+                We ran the research as a two-week sprint, with the
                 engineering lead and product head in every review. The IA
                 locked before we touched UI.
               </p>
@@ -238,10 +486,11 @@ export default function NoticeTrackerPage() {
 
           <Call
             title="Mirror the portal, or model the domain"
-            takeaway="Mirroring the source is the safe choice, and it means inheriting its problems. We chose to model the work instead, and took on the burden of proving it."
+            takeaway="Mirroring the source is the safe choice, and it means inheriting its problems."
           >
             <p>
-              Our first instinct was to replicate what the government showed. Reference IDs, listed flat, the way the portal returns them.
+              Our first instinct, and our first version, followed the portal:
+              notices listed flat, the way the government returns them.
             </p>
             <p>
               That has a real argument behind it. Users already knew that view. Nothing in our product would contradict what they saw when they logged into the portal, and we would never have to defend a structure the government did not recognise.
@@ -256,23 +505,23 @@ export default function NoticeTrackerPage() {
 
           <Prose>
             <p>
-              So we built the entire product around a single insight: every
-              screen and every interaction model anchors to a stable Case ID.
+              So every screen and every interaction anchors to a stable Case
+              ID. That one decision simplified the information architecture:
+              the dashboard could group by case, not by communication. The case
+              list could prioritise by case status, not by document type. The
+              case page could show a true chronological history. And the AI,
+              when we added it later, could summarise across the life of a case
+              rather than one document at a time.
             </p>
+          </Prose>
+
+          <NoticeVsCase />
+
+          <Prose>
             <p>
-              This single decision simplified the entire information
-              architecture. The dashboard could group by case, not by
-              communication. The case list could prioritize by case status, not
-              by document type. The case detail page could show a true
-              chronological history. The AI layer, when we added it later,
-              could summarize across the case lifetime rather than per
-              document.
-            </p>
-            <p>
-              <Em>
-                The Case ID became the spine. Every other design decision
-                flowed through it.
-              </Em>
+              The spine kept growing. Linking related cases started as a manual
+              action: search, select up to five cases, link. Once the AI could
+              read notices, it linked them automatically.
             </p>
           </Prose>
         </CaseStudySection>
@@ -368,11 +617,37 @@ export default function NoticeTrackerPage() {
               text="Case Workspace · Analyst view"
               className="mb-3"
             />
-            <ScreenshotPlaceholder
-              src="/work/notice-tracker/case-view.png"
-              alt="Case detail workspace with case metadata left, activity center middle, and history, files, and comments hub right"
-              caption="Three-column workspace with context, timeline, and collaboration hub"
+            <Prose>
+              <p>
+                The Analyst&rsquo;s screen took the most iterations. Every
+                version held the same information. The question was what
+                someone sees first.
+              </p>
+            </Prose>
+            <OptionsRow
+              options={CASEVIEW_OPTIONS}
+              shipped={{
+                label: "Latest stage open",
+                src: "/work/notice-tracker/case-view.png",
+                alt: "Shipped case workspace with case details on the left, stages in the centre with only the latest open, and history, files and comments on the right.",
+                verdict: "The latest stage open, older stages collapsed until needed.",
+              }}
             />
+            <Call
+              title="Two timelines, or one"
+            >
+              <p>
+                The status timeline read well on its own. But the case already
+                had an audit trail recording everything that happened. Two
+                timelines for one case would leave people unsure which to
+                trust.
+              </p>
+              <p>
+                So I cut it, and used progressive disclosure instead: the
+                latest stage open, older stages collapsed, the audit trail as
+                the single record.
+              </p>
+            </Call>
             <div className="mt-6">
               <Prose>
                 <p>
@@ -400,41 +675,57 @@ export default function NoticeTrackerPage() {
             </div>
           </div>
 
-          <Prose>
-            <p>
-              Underneath those three screens sat one structure. Every regime, every notice, and every system layer resolved to the same Case ID.
-            </p>
-          </Prose>
-
-          <ArchitectureMap caption="The full architecture as first scoped: GST, ITR and TDS, all resolving to one Case ID." />
         </CaseStudySection>
 
         {/* 7 · The decision to narrow */}
         <CaseStudySection title="The decision to narrow.">
           <Prose>
-            <p>We launched. The product worked. Customers loved it for GST notices specifically.</p>
             <p>
-              Then we extended to Direct Tax notices. We assumed the workflow
-              would translate. It did not.
+              The first plan was to solve every notice at once, so the design
+              covered every framework. Underneath it sat one structure: every
+              regime, every notice and every system layer resolved to the same
+              Case ID.
+            </p>
+          </Prose>
+
+          <ArchitectureMap caption="The full architecture as first scoped: GST, ITR and TDS, all resolving to one Case ID." />
+
+          <Prose>
+            <p>
+              When we shipped, we went one step at a time: GST first, then ITR
+              and TDS. Customers loved it for GST notices specifically. ITR and
+              TDS were a different story.
+            </p>
+          </Prose>
+
+          <Call
+            title="Every framework, or depth in one"
+          >
+            <p>
+              Customers had asked for every framework, and covering them all
+              would have made the product look bigger in every sales demo.
             </p>
             <p>
-              Within three months, the data was unambiguous. Direct Tax usage
-              was low. Support tickets revealed a fundamental workflow
-              mismatch. The notice formats were different. The deadline
-              structures were different. The user expectations were different.
+              But within three months the data was unambiguous. Usage on ITR
+              and TDS stayed low, and support tickets showed their workflows
+              did not match. The notice formats, the deadline structures and
+              the expectations were all different.
             </p>
             <p>
-              I led the call to stop active development on Direct Tax. We
-              repositioned it as a sales-assist tool, valuable for opening
-              doors with prospective customers, but not draining engineering
-              resources to maintain as a primary feature.
+              I scaled them back, kept Direct Tax as a sales assist for opening
+              conversations, and moved the engineering bandwidth into AI for
+              GST, where customers were already getting value.
             </p>
+          </Call>
+
+          <h3 className="mt-12 mb-4 text-[22px] font-semibold tracking-[-0.01em] leading-[1.3] text-[#1F1F1E]">
+            Naming the narrower product.
+          </h3>
+          <Prose>
             <p>
-              Two of the three regimes in that architecture came off. Direct Tax moved to sales assist, GST got the depth instead.
-            </p>
-            <p>
-              Then I made one more decision that turned out to matter: we
-              renamed the product.
+              Narrowing changed what the product was. The name had not caught
+              up: it still promised everything, when the product now did one
+              thing well.
             </p>
           </Prose>
 
@@ -448,9 +739,9 @@ export default function NoticeTrackerPage() {
 
           <Prose>
             <p>
-              The rename was not marketing. It was strategic. Management
-              implied a broad scope. Tracker encoded a narrow promise. The new
-              name told customers what we were and what we were not.
+              The rename came straight out of the decision to narrow. Management implied a broad scope we had just
+              chosen not to build. Tracker encoded the narrow promise: never
+              miss a notice.
             </p>
             <p>
               Engagement on core GST features rose. Off-track feature requests
@@ -469,67 +760,99 @@ export default function NoticeTrackerPage() {
               languages, with no standard format. Reading them is slow.
               Misreading them is expensive.
             </p>
-            <p>We added an AI layer with three capabilities:</p>
+            <p>
+              We tried it without AI first. Users could add the reasons behind
+              each notice themselves. Almost nobody did: reading a PDF and
+              typing it in is the work they wanted to escape. That is when AI
+              became the only way.
+            </p>
+          </Prose>
+
+          <AiWorkSplit
+            rows={AI_ROWS}
+            caption="Four ways to bring AI into the case. Read down the columns: only the last one takes the whole job off the user, before the day begins."
+          />
+
+          <Call
+            title="Ask for approval, or earn trust"
+            takeaway="An approval step that requires the original work is not a safeguard. It is the original work."
+          >
+            <p>
+              The review gate looked like the responsible choice: the AI
+              proposes, the user approves. But to approve a value, a user had
+              to open the PDF and read it, which undid the point of reading it
+              automatically.
+            </p>
+            <p>
+              So it never shipped, and trust moved into the interface instead.
+              Every AI value carries a Clear AI marker, so a user always knows
+              which numbers the government sent and which ones we read. And the
+              model leaves a field blank rather than guessing. We reviewed more
+              than a hundred real notices by hand to tune where that line sat:
+              an empty cell sends someone to the PDF, a confident wrong number
+              stops them from going.
+            </p>
+            <p>
+              What I would change: the source PDF sat two clicks away, inside
+              attachments. For the one field a user most wants to check, that
+              is one click too many.
+            </p>
+          </Call>
+
+          <h3 className="mt-12 mb-4 text-[22px] font-semibold tracking-[-0.01em] leading-[1.3] text-[#1F1F1E]">
+            Where the AI&rsquo;s reading should live.
+          </h3>
+          <Prose>
+            <p>
+              Once the AI could read a notice, the next question was where its
+              reading should appear: a summary, the reasons behind the notice,
+              and the fields the portal never returns, like demand amount, tax
+              section and due date. We tried it in five places.
+            </p>
+          </Prose>
+
+          <PlacementSchematics
+            placements={[...PLACEMENTS]}
+            caption="Five places for the same AI reading. Click any sketch to see the real screen."
+          />
+
+          <Call
+            title="A chat, or AI where they already work"
+            takeaway="Put the AI where the work already happens, not where the technology is fashionable."
+          >
+            <p>
+              A chat with Clear AI was the obvious move at the time, and we
+              designed it fully: suggested questions, its steps while thinking,
+              a hand-off to a support ticket, an honest error with a way to try
+              again.
+            </p>
+            <p>
+              We did not ship it. Our users are tax teams who live in Excel.
+              They scan tables, filter and export; they do not start
+              conversations with software. So the AI went to them instead: into
+              the Clear AI panel beside each case, and into the fields of
+              the case list.
+            </p>
+          </Call>
+
+          <Prose>
+            <p>Here is what shipped, for a single notice.</p>
           </Prose>
 
           <AIExtractionSequence />
 
           <Prose>
             <p>
-              <Em>AI Summaries.</Em> A plain-language explanation of what the
-              notice is actually demanding, generated from the PDF content.
+              One small decision went the other way. The AI started out as
+              Clear Intelligence. We shortened it to Clear AI: it fit the
+              interface better, and it kept us clear of any association with
+              Apple Intelligence.
             </p>
-            <p>
-              <Em>Reason Extraction.</Em> Automatic identification of the
-              specific reason for the notice. Was it a mismatch? A late
-              filing? An ITC dispute? Surfaced in structured form.
-            </p>
-            <p>
-              <Em>Structured Parsing.</Em> The government portal does not
-              return these fields. Users had to read every PDF to find the
-              demand amount, the relevant tax section, the actual due date. We
-              extracted these upfront and populated them directly in the case
-              list table view, so the team could triage at a glance instead of
-              opening every document.
-            </p>
-          </Prose>
-
-          <Call
-            title="When the AI should say nothing"
-            takeaway="The AI’s job was to speed up triage, not to become the record. Marking what it produced, and staying silent when unsure, was what let it do that safely."
-          >
-            <p>
-              Parsing demand amount, section and due date into the case list was the most useful thing the AI did. It was also the most dangerous.
-            </p>
-            <p>
-              A team triaging from that table decides what to touch first. If a demand amount is extracted wrongly, someone deprioritises a notice worth crores and never opens the PDF that would have told them.
-            </p>
-            <p>
-              Two decisions made that survivable.
-            </p>
-            <p>
-              First, extracted values never pretend to be portal values. Every AI-populated field carries a Clear AI marker, and hovering it says where the value came from. A user reading the table always knows which numbers the government sent and which ones we read.
-            </p>
-            <p>
-              Second, the model leaves a field blank rather than guessing. We reviewed more than a hundred real notices by hand to tune where that line sat. An empty cell sends someone to the PDF. A confident wrong number stops them from going.
-            </p>
-            <p>
-              What I would change: the source PDF sat two clicks away, inside attachments. For the one field a user most wants to check, that is one click too many.
-            </p>
-          </Call>
-
-          <Prose>
             <p>
               We shipped it in phases. Early Access first, with a small cohort
               of real customers feeding us their actual notices for training.
               General Availability followed only when extraction accuracy
               crossed a threshold where the AI felt invisible.
-            </p>
-            <p>
-              The principle for the AI rollout was simple:{" "}
-              <Em>ship as a capability, not a demo</Em>. Trust gets earned
-              through accuracy on real data, not through marketing
-              screenshots.
             </p>
           </Prose>
         </CaseStudySection>
@@ -539,7 +862,7 @@ export default function NoticeTrackerPage() {
           <Takeaways takeaways={TAKEAWAYS} />
         </CaseStudySection>
 
-        {/* 10 · Outcomes (dark) */}
+        {/* 10 · Outcomes (dark), restored from the live version */}
         <OutcomesSection
           label="Outcomes"
           title="What it added up to."

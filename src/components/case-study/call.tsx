@@ -1,34 +1,49 @@
 import type { ReactNode } from "react";
+import { Card } from "@/components/ui/card";
 
-// Inline decision-call block for case studies. Sits between paragraphs in
-// the prose flow and shows the road not taken next to the decision it
-// belongs to. Quieter than a section heading, louder than a paragraph.
+// Decision block for case studies. Each one marks a moment where two paths
+// were on the table (titles read "X, or Y"), says why one won, and ends on
+// the takeaway.
 //
-// Structure is deliberately flat: a left rule instead of a card, no
-// shadow, no icons, no heavy radius. Colour comes entirely from shadcn
-// semantic tokens (foreground, muted-foreground, border) so the block
-// inherits the theme rather than pinning its own palette.
+// Built on the ShadCN Card with a very pale amber tint so decisions stand
+// out from the prose without shouting. The box itself says "a choice was
+// made here", so there is no label or icon. The box has two tones: the
+// decision and its reasoning on the palest tint, and the lesson in a
+// slightly deeper band along the bottom, so the two read as separate parts.
 
 type CallProps = {
   title: string;
-  takeaway: ReactNode;
+  // The one quotable line. Optional on purpose: the page keeps only three,
+  // so the ones that remain carry weight.
+  takeaway?: ReactNode;
   children: ReactNode;
 };
 
 export function Call({ title, takeaway, children }: CallProps) {
   return (
-    <aside className="my-8 md:my-10 border-l border-border pl-6 md:pl-8 pt-4 md:pt-5 pb-2 md:pb-3">
-      <h3 className="text-[20px] font-semibold tracking-[-0.01em] leading-[1.3] text-foreground">
-        {title}
-      </h3>
+    <Card
+      role="note"
+      aria-label={`Decision: ${title}`}
+      className="my-8 gap-0 rounded-xl bg-[#FBF7F0] py-0 shadow-none ring-1 ring-[#EFE3CF] md:my-10"
+    >
+      <div className="px-6 py-6 md:px-8 md:py-7">
+        <h3 className="text-[20px] font-semibold leading-[1.3] tracking-[-0.01em] text-[#1F1F1E]">
+          {title}
+        </h3>
 
-      <div className="mt-3 space-y-4 text-[17px] leading-[1.7] md:leading-[1.6] text-muted-foreground">
-        {children}
+        <div className="mt-3 space-y-4 text-[17px] leading-[1.7] text-[#5F5E59] md:leading-[1.6]">
+          {children}
+        </div>
       </div>
 
-      <p className="mt-5 pt-5 border-t border-border text-[16px] font-medium leading-[1.6] text-foreground">
-        {takeaway}
-      </p>
-    </aside>
+      {takeaway ? (
+        <p
+          className="border-t border-[#EADBC2] bg-[#F5EBDA] px-6 py-4 text-[16px] font-medium leading-[1.6] text-[#7A4A12] md:px-8 md:py-5"
+          style={{ margin: 0 }}
+        >
+          {takeaway}
+        </p>
+      ) : null}
+    </Card>
   );
 }

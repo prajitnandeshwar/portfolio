@@ -31,6 +31,17 @@ type Project = {
 
 const projects: Project[] = [
   {
+    id: "notice-tracker",
+    year: "2025–26",
+    title: "Notice Tracker",
+    description: "AI-powered platform for managing GST notices at scale.",
+    tags: ["B2B", "AI", "0 to 1"],
+    href: "/work/notice-tracker",
+    image: "/work/notice-tracker.png",
+    theme: { from: "#FAF1EF", via: "#F6F2F1", to: "#F4F3F2", accent: "#D0634F" },
+    stat: { value: "₹2.3 Cr", label: "ARR" },
+  },
+  {
     id: "tax-assurance",
     year: "2026",
     status: "In market",
@@ -42,17 +53,6 @@ const projects: Project[] = [
     image: "/work/tax-assurance/france-executive-summary.png",
     theme: { from: "#FBF3EC", via: "#F6F3EF", to: "#F4F3F1", accent: "#C8783A" },
     stat: { value: "6", label: "customers" },
-  },
-  {
-    id: "notice-tracker",
-    year: "2025–26",
-    title: "Notice Tracker",
-    description: "AI-powered platform for managing GST notices at scale.",
-    tags: ["B2B", "AI", "0 to 1"],
-    href: "/work/notice-tracker",
-    image: "/work/notice-tracker.png",
-    theme: { from: "#FAF1EF", via: "#F6F2F1", to: "#F4F3F2", accent: "#D0634F" },
-    stat: { value: "₹2.3 Cr", label: "ARR" },
   },
   // Payment Recommendations and Mint Design System held the next two
   // slots. Both were in progress with no case study behind them, so the

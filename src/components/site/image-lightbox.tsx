@@ -31,6 +31,9 @@ type ImageLightboxProps = {
   frames?: string[];
   node?: ReactNode;
   caption?: string;
+  // Optional: one description per frame, shown under the image as you
+  // step through. Falls back to the shared caption when a frame has none.
+  captions?: string[];
   initialIndex?: number;
   // Optional: short label used for the (visually hidden) dialog title.
   // Required for accessibility; falls back to "Image preview".
@@ -45,7 +48,8 @@ export function ImageLightbox({
   onOpenChange,
   frames = [],
   node,
-  caption,
+  caption: sharedCaption,
+  captions,
   initialIndex = 0,
   title = "Image preview",
   closeOnOutsideClick = false,
@@ -99,6 +103,9 @@ export function ImageLightbox({
     }
     dragStart.current = null;
   };
+
+  // The text under the image follows the frame you are on.
+  const caption = captions?.[index] ?? sharedCaption;
 
   const hasFrames = frames.length > 0;
   const multiFrame = frames.length > 1;
